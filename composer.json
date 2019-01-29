@@ -1,0 +1,17 @@
+{
+    "name": "thanpa/buckaroo-php-sdk",
+    "description": "A PHP SDK for Buckaroo payment provider",
+    "type": "library",
+    "require": {
+        "phpunit/phpunit": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {"Buckaroo\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Tests\\": "tests"}
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit tests"
+    }
+}
