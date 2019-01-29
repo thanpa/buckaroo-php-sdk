@@ -1,7 +1,4 @@
-<p align="center">
-  <img src="https://secure.php.net/images/logos/php-logo.svg" width="128" height="128"/>
-</p>
-<h1 align="center">Buckaroo API client for PHP</h1>
+## Buckaroo API client for PHP ##
 
 Currently only accepting [iDEAL](https://dev.buckaroo.nl/PaymentMethods/Description/ideal#top)
 
