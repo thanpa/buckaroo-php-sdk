@@ -1,7 +1,7 @@
 <?php
 namespace Buckaroo;
 
-class Client
+class Client implements ClientInterface
 {
     private $websiteKey = '';
     private $secretKey = '';

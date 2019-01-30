@@ -60,6 +60,13 @@ class Transaction
         $this->client = new Client();
     }
 
+    public function setClient(ClientInterface $client): Transaction
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
     public function setCurrency(string $currency): Transaction
     {
         // Filter valid currency
