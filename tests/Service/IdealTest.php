@@ -8,7 +8,7 @@ use Buckaroo\Service\Ideal;
 
 final class IdealTest extends TestCase
 {
-    public function testPopulatesParameters(): void
+    public function testPay(): void
     {
         $mockedClient = $this->getMockBuilder(Client::class)
             ->setMethods(['call'])
