@@ -40,7 +40,7 @@ class Transaction
     private $requiredAction;
 
     private $requestErrors = null;
-    private $serviceCode = 'ideal';
+    private $serviceCode = '';
     private $isTest = true;
     private $transactionType = '';
     private $mutationType = 1;
