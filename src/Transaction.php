@@ -6,6 +6,7 @@ use Buckaroo\Exceptions\UndefinedPaymentMethodException;
 use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction\ClientIp;
 use Buckaroo\Transaction\Status;
+use Buckaroo\Transaction\RequiredAction;
 use Buckaroo\Transaction\Status\Code;
 use DateTime;
 use stdClass;
@@ -36,6 +37,21 @@ class Transaction
 
     private $key = '';
     private $status;
+    private $requiredAction;
+
+    private $requestErrors = null;
+    private $serviceCode = 'ideal';
+    private $isTest = true;
+    private $transactionType = '';
+    private $mutationType = 1;
+    private $relatedTransactions = null;
+    private $consumerMessage = null;
+    private $order = null;
+    private $issuingCountry = null;
+    private $recurring = false;
+    private $customerName = null;
+    private $payerHash = null;
+    private $paymentKey = '';
 
     private $client;
 
@@ -331,12 +347,200 @@ class Transaction
         return $this->status;
     }
 
+    public function setRequiredAction(stdClass $requiredAction): Transaction
+    {
+        $this->requiredAction = (new RequiredAction())
+            ->setRedirectUrl($requiredAction->RedirectURL)
+            ->setRequestedInformation($requiredAction->RequestedInformation)
+            ->setPayRemainderDetails($requiredAction->PayRemainderDetails)
+            ->setName($requiredAction->Name)
+            ->setTypeDeprecated($requiredAction->TypeDeprecated);
+
+        return $this;
+    }
+
+    public function getRequiredAction(): RequiredAction
+    {
+        return $this->requiredAction;
+    }
+
+    public function setRequestErrors(?string $requestErrors): Transaction
+    {
+        $this->requestErrors = $requestErrors;
+
+        return $this;
+    }
+
+    public function getRequestErrors(): ?string
+    {
+        return $this->requestErrors;
+    }
+
+    public function setServiceCode(string $serviceCode): Transaction
+    {
+        $this->serviceCode = $serviceCode;
+
+        return $this;
+    }
+
+    public function getServiceCode(): string
+    {
+        return $this->serviceCode;
+    }
+
+    public function setIsTest(bool $isTest): Transaction
+    {
+        $this->isTest = $isTest;
+
+        return $this;
+    }
+
+    public function getIsTest(): bool
+    {
+        return $this->isTest;
+    }
+
+    public function setTransactionType(string $transactionType): Transaction
+    {
+        $this->transactionType = $transactionType;
+
+        return $this;
+    }
+
+    public function getTransactionType(): string
+    {
+        return $this->transactionType;
+    }
+
+    public function setMutationType(int $mutationType): Transaction
+    {
+        $this->mutationType = $mutationType;
+
+        return $this;
+    }
+
+    public function getMutationType(): int
+    {
+        return $this->mutationType;
+    }
+
+    public function setRelatedTransactions(?string $relatedTransactions): Transaction
+    {
+        $this->relatedTransactions = $relatedTransactions;
+
+        return $this;
+    }
+
+    public function getRelatedTransactions(): ?string
+    {
+        return $this->relatedTransactions;
+    }
+
+    public function setConsumerMessage(?string $consumerMessage): Transaction
+    {
+        $this->consumerMessage = $consumerMessage;
+
+        return $this;
+    }
+
+    public function getConsumerMessage(): ?string
+    {
+        return $this->consumerMessage;
+    }
+
+    public function setOrder(?string $order): Transaction
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    public function getOrder(): ?string
+    {
+        return $this->order;
+    }
+
+    public function setIssuingCountry(?string $issuingCountry): Transaction
+    {
+        $this->issuingCountry = $issuingCountry;
+
+        return $this;
+    }
+
+    public function getIssuingCountry(): ?string
+    {
+        return $this->issuingCountry;
+    }
+
+    public function setRecurring(bool $recurring): Transaction
+    {
+        $this->recurring = $recurring;
+
+        return $this;
+    }
+
+    public function getRecurring(): bool
+    {
+        return $this->recurring;
+    }
+
+    public function setCustomerName(?string $customerName): Transaction
+    {
+        $this->customerName = $customerName;
+
+        return $this;
+    }
+
+    public function getCustomerName(): ?string
+    {
+        return $this->customerName;
+    }
+
+    public function setPayerHash(?string $payerHash): Transaction
+    {
+        $this->payerHash = $payerHash;
+
+        return $this;
+    }
+
+    public function getPayerHash(): ?string
+    {
+        return $this->payerHash;
+    }
+
+    public function setPaymentKey(string $paymentKey): Transaction
+    {
+        $this->paymentKey = $paymentKey;
+
+        return $this;
+    }
+
+    public function getPaymentKey(): string
+    {
+        return $this->paymentKey;
+    }
+
     public function execute(): Transaction
     {
         $response = json_decode($this->client->call($this->getData()));
-        $this->setServiceData($response->Services);
-        $this->setKey($response->Key);
-        $this->setStatus($response->Status);
+        $this
+            ->setServiceData($response->Services)
+            ->setKey($response->Key)
+            ->setStatus($response->Status)
+            ->setRequiredAction($response->RequiredAction)
+            ->setRequestErrors($response->RequestErrors)
+            ->setServiceCode($response->ServiceCode)
+            ->setIsTest($response->IsTest)
+            ->setTransactionType($response->TransactionType)
+            ->setMutationType($response->MutationType)
+            ->setRelatedTransactions($response->RelatedTransactions)
+            ->setConsumerMessage($response->ConsumerMessage)
+            ->setOrder($response->Order)
+            ->setIssuingCountry($response->IssuingCountry)
+            ->setRecurring($response->Recurring)
+            ->setCustomerName($response->CustomerName)
+            ->setPayerHash($response->PayerHash)
+            ->setPaymentKey($response->PaymentKey);
 
         return $this;
     }
