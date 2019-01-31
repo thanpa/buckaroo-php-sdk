@@ -160,10 +160,10 @@ final class IdealTest extends TestCase
         $tr->setClient($mockedClient);
         $tr->addService($service)->execute();
 
-        $this->assertEquals($service->getAction(), 'Refund');
-        $this->assertEquals($service->getCustomerAccountName(), 'J. de Tèster');
-        $this->assertEquals($service->getCustomerIban(), 'NL44RABO0123456789');
-        $this->assertEquals($service->getCustomerBic(), 'RABONL2U');
+        $this->assertEquals('Refund', $service->getAction());
+        $this->assertEquals('J. de Tèster', $service->getCustomerAccountName());
+        $this->assertEquals('NL44RABO0123456789', $service->getCustomerIban());
+        $this->assertEquals('RABONL2U', $service->getCustomerBic());
     }
 }
 

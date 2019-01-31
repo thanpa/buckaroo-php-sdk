@@ -18,7 +18,9 @@ abstract class ServiceAbstract
     public function setParameters(array $parameters): ServiceInterface
     {
         foreach ($parameters as $parameter) {
-            $this->{$parameter->Name} = $parameter->Value;
+            if (property_exists($this, $parameter->Name)) {
+                $this->{$parameter->Name} = $parameter->Value;
+            }
         }
         return $this;
     }

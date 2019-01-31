@@ -9,11 +9,11 @@ class Ideal extends ServiceAbstract implements ServiceInterface
 
     protected $transactionId = '';
 
-    protected $customeraccountname = '';
+    protected $customerAccountName = '';
 
-    protected $CustomerIBAN = '';
+    protected $customerIban = '';
 
-    protected $CustomerBIC = '';
+    protected $customerBic = '';
 
     public function getName(): string
     {
@@ -56,6 +56,63 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this->transactionId;
     }
 
+    public function setCustomerAccountName(string $customerAccountName): Ideal
+    {
+        $this->customerAccountName = $customerAccountName;
+
+        return $this;
+    }
+
+    public function getCustomerAccountName(): string
+    {
+        return $this->customerAccountName;
+    }
+
+    public function setCustomerIban(string $customerIban): Ideal
+    {
+        $this->customerIban = $customerIban;
+
+        return $this;
+    }
+
+    public function getCustomerIban(): string
+    {
+        return $this->customerIban;
+    }
+
+    public function setCustomerBic(string $customerBic): Ideal
+    {
+        $this->customerBic = $customerBic;
+
+        return $this;
+    }
+
+    public function getCustomerBic(): string
+    {
+        return $this->customerBic;
+    }
+
+    public function setParameters(array $parameters): ServiceInterface
+    {
+        $parameters = array_combine(array_column($parameters, 'Name'), array_column($parameters, 'Value'));
+        if (isset($parameters['consumerIssuer'])) {
+            $this->consumerIssuer = $parameters['consumerIssuer'];
+        }
+        if (isset($parameters['transactionId'])) {
+            $this->transactionId = $parameters['transactionId'];
+        }
+        if (isset($parameters['customeraccountname'])) {
+            $this->customerAccountName = $parameters['customeraccountname'];
+        }
+        if (isset($parameters['CustomerIBAN'])) {
+            $this->customerIban = $parameters['CustomerIBAN'];
+        }
+        if (isset($parameters['CustomerBIC'])) {
+            $this->customerBic = $parameters['CustomerBIC'];
+        }
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
@@ -66,41 +123,5 @@ class Ideal extends ServiceAbstract implements ServiceInterface
                 'Value' => $this->getIssuer(),
             ],
         ];
-    }
-
-    public function setCustomerAccountName(string $customeraccountname): Ideal
-    {
-        $this->customeraccountname = $customeraccountname;
-
-        return $this;
-    }
-
-    public function getCustomerAccountName(): string
-    {
-        return $this->customeraccountname;
-    }
-
-    public function setCustomerIban(string $CustomerIBAN): Ideal
-    {
-        $this->CustomerIBAN = $CustomerIBAN;
-
-        return $this;
-    }
-
-    public function getCustomerIban(): string
-    {
-        return $this->CustomerIBAN;
-    }
-
-    public function setCustomerBic(string $CustomerBIC): Ideal
-    {
-        $this->CustomerBIC = $CustomerBIC;
-
-        return $this;
-    }
-
-    public function getCustomerBic(): string
-    {
-        return $this->CustomerBIC;
     }
 }
