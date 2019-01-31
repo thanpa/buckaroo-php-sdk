@@ -142,7 +142,7 @@ class Ideal extends ServiceAbstract implements ServiceInterface
     /**
      * CustomerIban setter
      *
-     * @param CustomerIban $customerIban
+     * @param string $customerIban
      * @return Ideal
      */
     public function setCustomerIban(string $customerIban): Ideal
@@ -165,7 +165,7 @@ class Ideal extends ServiceAbstract implements ServiceInterface
     /**
      * CustomerBic setter
      *
-     * @param CustomerBic $customerBic
+     * @param string $customerBic
      * @return Ideal
      */
     public function setCustomerBic(string $customerBic): Ideal
