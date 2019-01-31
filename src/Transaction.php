@@ -354,7 +354,7 @@ class Transaction
         return $this->status;
     }
 
-    public function setRequiredAction(stdClass $requiredAction): Transaction
+    public function setRequiredAction(?stdClass $requiredAction): Transaction
     {
         $this->requiredAction = (new RequiredAction())
             ->setRedirectUrl($requiredAction->RedirectURL)
@@ -431,14 +431,14 @@ class Transaction
         return $this->mutationType;
     }
 
-    public function setRelatedTransactions(?string $relatedTransactions): Transaction
+    public function setRelatedTransactions(?array $relatedTransactions): Transaction
     {
         $this->relatedTransactions = $relatedTransactions;
 
         return $this;
     }
 
-    public function getRelatedTransactions(): ?string
+    public function getRelatedTransactions(): ?array
     {
         return $this->relatedTransactions;
     }

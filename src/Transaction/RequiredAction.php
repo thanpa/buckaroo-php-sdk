@@ -39,7 +39,7 @@ class RequiredAction
      * @param string $redirectUrl
      * @return RequiredAction
      */
-    public function setRedirectUrl(string $redirectUrl): RequiredAction
+    public function setRedirectUrl(?string $redirectUrl): RequiredAction
     {
         $this->redirectUrl = $redirectUrl;
 
@@ -110,7 +110,7 @@ class RequiredAction
      * @param string $name
      * @return RequiredAction
      */
-    public function setName(string $name): RequiredAction
+    public function setName(?string $name): RequiredAction
     {
         $this->name = $name;
 
@@ -133,7 +133,7 @@ class RequiredAction
      * @param int $typeDeprecated
      * @return RequiredAction
      */
-    public function setTypeDeprecated(int $typeDeprecated): RequiredAction
+    public function setTypeDeprecated(?int $typeDeprecated): RequiredAction
     {
         $this->typeDeprecated = $typeDeprecated;
 

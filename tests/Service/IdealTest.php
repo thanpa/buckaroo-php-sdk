@@ -80,8 +80,90 @@ final class IdealTest extends TestCase
         $tr->setClient($mockedClient);
         $tr->addService($service)->execute();
 
+        $this->assertEquals($service->getAction(), 'Pay');
         $this->assertEquals($service->getConsumerIssuer(), 'ABN AMRO');
         $this->assertEquals($service->getTransactionId(), '0000000000000001');
+    }
+
+    public function testRefund(): void
+    {
+        $mockedClient = $this->getMockBuilder(Client::class)
+            ->setMethods(['call'])
+            ->getMock();
+
+        $mockedClient->method('call')->willReturn(
+            '{
+                "Key": "F996EE747ECD43CDA8851C5F83XXXXXX",
+                "Status": {
+                    "Code": {
+                        "Code": 190,
+                        "Description": "Success"
+                    },
+                    "SubCode": {
+                        "Code": "S001",
+                        "Description": "Transaction successfully processed"
+                    },
+                    "DateTime": "2017-03-31T09:03:45"
+                },
+                "RequiredAction": null,
+                "Services": [
+                    {
+                        "Name": "ideal",
+                        "Action": null,
+                        "Parameters": [
+                            {
+                                "Name": "customeraccountname",
+                                "Value": "J. de Tèster"
+                            },
+                            {
+                                "Name": "CustomerIBAN",
+                                "Value": "NL44RABO0123456789"
+                            },
+                            {
+                                "Name": "CustomerBIC",
+                                "Value": "RABONL2U"
+                            }
+                        ]
+                    }
+                ],
+                "CustomParameters": null,
+                "AdditionalParameters": null,
+                "RequestErrors": null,
+                "Invoice": "testinvoice 123",
+                "ServiceCode": "ideal",
+                "IsTest": true,
+                "Currency": "EUR",
+                "AmountCredit": 1,
+                "TransactionType": "C121",
+                "MutationType": 1,
+                "RelatedTransactions": [
+                    {
+                        "RelationType": "refund",
+                        "RelatedTransactionKey": "4E8BD922192746C3918BF4077CXXXXXX"
+                    }
+                ],
+                "ConsumerMessage": null,
+                "Order": null,
+                "IssuingCountry": null,
+                "StartRecurrent": false,
+                "Recurring": false,
+                "CustomerName": "J. de Tèster",
+                "PayerHash": null,
+                "PaymentKey": "AE8B6E18A2684846AAAF06A63FXXXXXX"
+            }'
+        );
+
+        $service = new Ideal('Refund');
+        $service->setIssuer('ABNANL2A');
+
+        $tr = new Transaction();
+        $tr->setClient($mockedClient);
+        $tr->addService($service)->execute();
+
+        $this->assertEquals($service->getAction(), 'Refund');
+        $this->assertEquals($service->getCustomerAccountName(), 'J. de Tèster');
+        $this->assertEquals($service->getCustomerIban(), 'NL44RABO0123456789');
+        $this->assertEquals($service->getCustomerBic(), 'RABONL2U');
     }
 }
 

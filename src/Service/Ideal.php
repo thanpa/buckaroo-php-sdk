@@ -9,6 +9,12 @@ class Ideal extends ServiceAbstract implements ServiceInterface
 
     protected $transactionId = '';
 
+    protected $customeraccountname = '';
+
+    protected $CustomerIBAN = '';
+
+    protected $CustomerBIC = '';
+
     public function getName(): string
     {
         return 'ideal';
@@ -60,5 +66,41 @@ class Ideal extends ServiceAbstract implements ServiceInterface
                 'Value' => $this->getIssuer(),
             ],
         ];
+    }
+
+    public function setCustomerAccountName(string $customeraccountname): Ideal
+    {
+        $this->customeraccountname = $customeraccountname;
+
+        return $this;
+    }
+
+    public function getCustomerAccountName(): string
+    {
+        return $this->customeraccountname;
+    }
+
+    public function setCustomerIban(string $CustomerIBAN): Ideal
+    {
+        $this->CustomerIBAN = $CustomerIBAN;
+
+        return $this;
+    }
+
+    public function getCustomerIban(): string
+    {
+        return $this->CustomerIBAN;
+    }
+
+    public function setCustomerBic(string $CustomerBIC): Ideal
+    {
+        $this->CustomerBIC = $CustomerBIC;
+
+        return $this;
+    }
+
+    public function getCustomerBic(): string
+    {
+        return $this->CustomerBIC;
     }
 }
