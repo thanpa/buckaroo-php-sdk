@@ -11,55 +11,217 @@ use Buckaroo\Transaction\Status\Code;
 use DateTime;
 use stdClass;
 
+/**
+ * This class holds information about the transaction. The information is
+ * for both request and response data. The execution of the transaction
+ * uses the request data to set the response data.
+ */
 class Transaction
 {
+    /**
+     * @var string
+     */
     private $currency = '';
+
+    /**
+     * @var int
+     */
     private $amount = 0;
+
+    /**
+     * @var string
+     */
     private $invoice = '';
+
+    /**
+     * @var string
+     */
     private $description = '';
+
+    /**
+     * @var ClientIp
+     */
     private $clientIp;
+
+    /**
+     * @var string
+     */
     private $returnUrl = '';
+
+    /**
+     * @var string
+     */
     private $returnUrlCancel = '';
+
+    /**
+     * @var string
+     */
     private $returnUrlError = '';
+
+    /**
+     * @var string
+     */
     private $returnUrlReject = '';
+
+    /**
+     * @var string
+     */
     private $originalTransactionKey = '';
+
+    /**
+     * @var bool
+     */
     private $startRecurrent = false;
+
+    /**
+     * @var string
+     */
     private $continueOnIncomplete = 'No';
+
+    /**
+     * @var array
+     */
     private $services = [];
+
+    /**
+     * @var string
+     */
     private $servicesSelectableByClient = '';
+
+    /**
+     * @var string
+     */
     private $servicesExcludedForClient = '';
+
+    /**
+     * @var string
+     */
     private $pushURL = '';
+
+    /**
+     * @var string
+     */
     private $pushURLFailure = '';
+
+    /**
+     * @var string
+     */
     private $clientUserAgent = '';
+
+    /**
+     * @var string
+     */
     private $originalTransactionReference = '';
+
+    /**
+     * @var array
+     */
     private $customParameters = [];
+
+    /**
+     * @var array
+     */
     private $additionalParameters = [];
 
+    /**
+     * @var string
+     */
     private $key = '';
+
+    /**
+     * @var Status
+     */
     private $status;
+
+    /**
+     * @var RequiredAction
+     */
     private $requiredAction;
 
+    /**
+     * @var string
+     */
     private $requestErrors = null;
+
+    /**
+     * @var string
+     */
     private $serviceCode = '';
+
+    /**
+     * @var bool
+     */
     private $isTest = true;
+
+    /**
+     * @var string
+     */
     private $transactionType = '';
+
+    /**
+     * @var int
+     */
     private $mutationType = 1;
+
+    /**
+     * @var array
+     */
     private $relatedTransactions = null;
+
+    /**
+     * @var string
+     */
     private $consumerMessage = null;
+
+    /**
+     * @var string
+     */
     private $order = null;
+
+    /**
+     * @var string
+     */
     private $issuingCountry = null;
+
+    /**
+     * @var bool
+     */
     private $recurring = false;
+
+    /**
+     * @var string
+     */
     private $customerName = null;
+
+    /**
+     * @var string
+     */
     private $payerHash = null;
+
+    /**
+     * @var string
+     */
     private $paymentKey = '';
 
+    /**
+     * @var Client
+     */
     private $client;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->client = new Client();
     }
 
+    /**
+     * Client setter.
+     *
+     * @param ClientInterface $client
+     * @return Transaction
+     */
     public function setClient(ClientInterface $client): Transaction
     {
         $this->client = $client;
@@ -67,6 +229,12 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Currency setter.
+     *
+     * @param string $currency
+     * @return Transaction
+     */
     public function setCurrency(string $currency): Transaction
     {
         // Filter valid currency
@@ -75,11 +243,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Currency getter.
+     *
+     * @return string
+     */
     public function getCurrency(): string
     {
         return $this->currency;
     }
 
+    /**
+     * Amount setter.
+     *
+     * @param float $amount
+     * @return Transaction
+     */
     public function setAmount(float $amount): Transaction
     {
         $this->amount = $amount;
@@ -87,11 +266,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Amount getter.
+     *
+     * @return float
+     */
     public function getAmount(): float
     {
         return $this->amount;
     }
 
+    /**
+     * Invoice setter.
+     *
+     * @param string $invoice
+     * @return Transaction
+     */
     public function setInvoice(string $invoice): Transaction
     {
         // Filter printable characters
@@ -100,11 +290,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Invoice getter.
+     *
+     * @return string
+     */
     public function getInvoice(): string
     {
         return $this->invoice;
     }
 
+    /**
+     * Description setter.
+     *
+     * @param string $description
+     * @return Transaction
+     */
     public function setDescription(string $description): Transaction
     {
         $this->description = $description;
@@ -112,16 +313,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Description getter.
+     *
+     * @return string
+     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function getClientIp(): ClientIp
-    {
-        return $this->clientIp;
-    }
-
+    /**
+     * ClientIp setter.
+     *
+     * @param ClientIp $clientIp
+     * @return Transaction
+     */
     public function setClientIp(ClientIp $clientIp): Transaction
     {
         $this->clientIp = $clientIp;
@@ -129,11 +336,22 @@ class Transaction
         return $this;
     }
 
-    public function getReturnUrl(): string
+    /**
+     * ClientIp getter.
+     *
+     * @return ClientIp
+     */
+    public function getClientIp(): ClientIp
     {
-        return $this->returnUrl;
+        return $this->clientIp;
     }
 
+    /**
+     * ReturnUrl setter.
+     *
+     * @param string $returnUrl
+     * @return Transaction
+     */
     public function setReturnUrl(string $returnUrl): Transaction
     {
         $this->returnUrl = $returnUrl;
@@ -141,11 +359,22 @@ class Transaction
         return $this;
     }
 
-    public function getReturnUrlCancel(): string
+    /**
+     * ReturnUrl getter.
+     *
+     * @return string
+     */
+    public function getReturnUrl(): string
     {
-        return $this->returnUrlCancel;
+        return $this->returnUrl;
     }
 
+    /**
+     * ReturnUrlCancel setter.
+     *
+     * @param string $returnUrlCancel
+     * @return Transaction
+     */
     public function setReturnUrlCancel(string $returnUrlCancel): Transaction
     {
         $this->returnUrlCancel = $returnUrlCancel;
@@ -153,11 +382,22 @@ class Transaction
         return $this;
     }
 
-    public function getReturnUrlError(): string
+    /**
+     * ReturnUrlCancel getter.
+     *
+     * @return string
+     */
+    public function getReturnUrlCancel(): string
     {
-        return $this->returnUrlError;
+        return $this->returnUrlCancel;
     }
 
+    /**
+     * ReturnUrlError setter.
+     *
+     * @param string $returnUrlError
+     * @return Transaction
+     */
     public function setReturnUrlError(string $returnUrlError): Transaction
     {
         $this->returnUrlError = $returnUrlError;
@@ -165,11 +405,22 @@ class Transaction
         return $this;
     }
 
-    public function getReturnUrlReject(): string
+    /**
+     * ReturnUrlError getter.
+     *
+     * @return string
+     */
+    public function getReturnUrlError(): string
     {
-        return $this->returnUrlReject;
+        return $this->returnUrlError;
     }
 
+    /**
+     * ReturnUrlReject setter.
+     *
+     * @param string $returnUrlReject
+     * @return Transaction
+     */
     public function setReturnUrlReject(string $returnUrlReject): Transaction
     {
         $this->returnUrlReject = $returnUrlReject;
@@ -177,11 +428,22 @@ class Transaction
         return $this;
     }
 
-    public function getOriginalTransactionKey(): string
+    /**
+     * ReturnUrlReject getter.
+     *
+     * @return string
+     */
+    public function getReturnUrlReject(): string
     {
-        return $this->originalTransactionKey;
+        return $this->returnUrlReject;
     }
 
+    /**
+     * OriginalTransactionKey setter.
+     *
+     * @param string $originalTransactionKey
+     * @return Transaction
+     */
     public function setOriginalTransactionKey(string $originalTransactionKey): Transaction
     {
         $this->originalTransactionKey = $originalTransactionKey;
@@ -189,11 +451,22 @@ class Transaction
         return $this;
     }
 
-    public function getStartRecurrent(): bool
+    /**
+     * OriginalTransactionKey getter.
+     *
+     * @return string
+     */
+    public function getOriginalTransactionKey(): string
     {
-        return $this->startRecurrent;
+        return $this->originalTransactionKey;
     }
 
+    /**
+     * StartRecurrent setter.
+     *
+     * @param bool $startRecurrent
+     * @return Transaction
+     */
     public function setStartRecurrent(bool $startRecurrent): Transaction
     {
         $this->startRecurrent = $startRecurrent;
@@ -201,11 +474,22 @@ class Transaction
         return $this;
     }
 
-    public function getContinueOnIncomplete(): string
+    /**
+     * StartRecurrent getter.
+     *
+     * @return bool
+     */
+    public function getStartRecurrent(): bool
     {
-        return $this->continueOnIncomplete;
+        return $this->startRecurrent;
     }
 
+    /**
+     * ContinueOnIncomplete setter.
+     *
+     * @param string $continueOnIncomplete
+     * @return Transaction
+     */
     public function setContinueOnIncomplete(string $continueOnIncomplete): Transaction
     {
         $this->continueOnIncomplete = $continueOnIncomplete;
@@ -213,6 +497,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * ContinueOnIncomplete getter.
+     *
+     * @return string
+     */
+    public function getContinueOnIncomplete(): string
+    {
+        return $this->continueOnIncomplete;
+    }
+
+    /**
+     * Service add.
+     *
+     * @param ServiceInterface $service
+     * @return Transaction
+     */
     public function addService(ServiceInterface $service): Transaction
     {
         $this->services[$service->getName()] = $service;
@@ -220,21 +520,32 @@ class Transaction
         return $this;
     }
 
-    public function getServices(): array
-    {
-        return $this->services;
-    }
-
+    /**
+     * Service getter.
+     *
+     * @return ServiceInterface
+     */
     public function getService(string $name): ServiceInterface
     {
         return $this->services[$name];
     }
 
-    public function getServicesSelectableByClient(): string
+    /**
+     * Services getter.
+     *
+     * @return array
+     */
+    public function getServices(): array
     {
-        return $this->servicesSelectableByClient;
+        return $this->services;
     }
 
+    /**
+     * ServicesSelectableByClient setter.
+     *
+     * @param string $servicesSelectableByClient
+     * @return Transaction
+     */
     public function setServicesSelectableByClient(string $servicesSelectableByClient): Transaction
     {
         $this->servicesSelectableByClient = $servicesSelectableByClient;
@@ -242,11 +553,22 @@ class Transaction
         return $this;
     }
 
-    public function getServicesExcludedForClient(): string
+    /**
+     * ServicesSelectableByClient getter.
+     *
+     * @return string
+     */
+    public function getServicesSelectableByClient(): string
     {
-        return $this->servicesExcludedForClient;
+        return $this->servicesSelectableByClient;
     }
 
+    /**
+     * ServicesExcludedForClient setter.
+     *
+     * @param string $servicesExcludedForClient
+     * @return Transaction
+     */
     public function setServicesExcludedForClient(string $servicesExcludedForClient): Transaction
     {
         $this->servicesExcludedForClient = $servicesExcludedForClient;
@@ -254,11 +576,22 @@ class Transaction
         return $this;
     }
 
-    public function getPushURL(): string
+    /**
+     * ServicesExcludedForClient getter.
+     *
+     * @return string
+     */
+    public function getServicesExcludedForClient(): string
     {
-        return $this->pushURL;
+        return $this->servicesExcludedForClient;
     }
 
+    /**
+     * PushURL setter.
+     *
+     * @param string $pushURL
+     * @return Transaction
+     */
     public function setPushURL(string $pushURL): Transaction
     {
         $this->pushURL = $pushURL;
@@ -266,11 +599,22 @@ class Transaction
         return $this;
     }
 
-    public function getPushURLFailure(): string
+    /**
+     * PushURL getter.
+     *
+     * @return string
+     */
+    public function getPushURL(): string
     {
-        return $this->pushURLFailure;
+        return $this->pushURL;
     }
 
+    /**
+     * PushURLFailure setter.
+     *
+     * @param string $pushURLFailure
+     * @return Transaction
+     */
     public function setPushURLFailure(string $pushURLFailure): Transaction
     {
         $this->pushURLFailure = $pushURLFailure;
@@ -278,11 +622,22 @@ class Transaction
         return $this;
     }
 
-    public function getClientUserAgent(): string
+    /**
+     * PushURLFailure getter.
+     *
+     * @return string
+     */
+    public function getPushURLFailure(): string
     {
-        return $this->clientUserAgent;
+        return $this->pushURLFailure;
     }
 
+    /**
+     * ClientUserAgent setter.
+     *
+     * @param string $clientUserAgent
+     * @return Transaction
+     */
     public function setClientUserAgent(string $clientUserAgent): Transaction
     {
         $this->clientUserAgent = $clientUserAgent;
@@ -290,11 +645,22 @@ class Transaction
         return $this;
     }
 
-    public function getOriginalTransactionReference(): string
+    /**
+     * ClientUserAgent getter.
+     *
+     * @return string
+     */
+    public function getClientUserAgent(): string
     {
-        return $this->originalTransactionReference;
+        return $this->clientUserAgent;
     }
 
+    /**
+     * OriginalTransactionReference setter.
+     *
+     * @param string $originalTransactionReference
+     * @return Transaction
+     */
     public function setOriginalTransactionReference(string $originalTransactionReference): Transaction
     {
         $this->originalTransactionReference = $originalTransactionReference;
@@ -302,11 +668,22 @@ class Transaction
         return $this;
     }
 
-    public function getCustomParameters(): array
+    /**
+     * OriginalTransactionReference getter.
+     *
+     * @return string
+     */
+    public function getOriginalTransactionReference(): string
     {
-        return $this->customParameters;
+        return $this->originalTransactionReference;
     }
 
+    /**
+     * CustomParameters setter.
+     *
+     * @param array $customParameters
+     * @return Transaction
+     */
     public function setCustomParameters(array $customParameters): Transaction
     {
         $this->customParameters = $customParameters;
@@ -314,11 +691,22 @@ class Transaction
         return $this;
     }
 
-    public function getAdditionalParameters(): array
+    /**
+     * CustomParameters getter.
+     *
+     * @return array
+     */
+    public function getCustomParameters(): array
     {
-        return $this->additionalParameters;
+        return $this->customParameters;
     }
 
+    /**
+     * AdditionalParameters setter.
+     *
+     * @param array $additionalParameters
+     * @return Transaction
+     */
     public function setAdditionalParameters(array $additionalParameters): Transaction
     {
         $this->additionalParameters = $additionalParameters;
@@ -326,6 +714,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * AdditionalParameters getter.
+     *
+     * @return array
+     */
+    public function getAdditionalParameters(): array
+    {
+        return $this->additionalParameters;
+    }
+
+    /**
+     * Key setter.
+     *
+     * @param string $key
+     * @return Transaction
+     */
     public function setKey(string $key): Transaction
     {
         $this->key = $key;
@@ -333,11 +737,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Key getter.
+     *
+     * @return string
+     */
     public function getKey(): string
     {
         return $this->key;
     }
 
+    /**
+     * Status setter.
+     *
+     * @param stdClass $status
+     * @return Transaction
+     */
     public function setStatus(stdClass $status): Transaction
     {
         $code = (new Code())->setCode($status->Code->Code)->setDescription($status->Code->Description);
@@ -349,11 +764,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Status getter.
+     *
+     * @return Status
+     */
     public function getStatus(): Status
     {
         return $this->status;
     }
 
+    /**
+     * RequiredAction setter.
+     *
+     * @param stdClass $requiredAction
+     * @return Transaction
+     */
     public function setRequiredAction(?stdClass $requiredAction): Transaction
     {
         $this->requiredAction = (new RequiredAction())
@@ -366,11 +792,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * RequiredAction getter.
+     *
+     * @return RequiredAction
+     */
     public function getRequiredAction(): RequiredAction
     {
         return $this->requiredAction;
     }
 
+    /**
+     * RequestErrors setter.
+     *
+     * @param string $requestErrors
+     * @return Transaction
+     */
     public function setRequestErrors(?string $requestErrors): Transaction
     {
         $this->requestErrors = $requestErrors;
@@ -378,11 +815,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * RequestErrors getter.
+     *
+     * @return string
+     */
     public function getRequestErrors(): ?string
     {
         return $this->requestErrors;
     }
 
+    /**
+     * ServiceCode setter.
+     *
+     * @param string $serviceCode
+     * @return Transaction
+     */
     public function setServiceCode(string $serviceCode): Transaction
     {
         $this->serviceCode = $serviceCode;
@@ -390,11 +838,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * ServiceCode getter.
+     *
+     * @return string
+     */
     public function getServiceCode(): string
     {
         return $this->serviceCode;
     }
 
+    /**
+     * IsTest setter.
+     *
+     * @param bool $isTest
+     * @return Transaction
+     */
     public function setIsTest(bool $isTest): Transaction
     {
         $this->isTest = $isTest;
@@ -402,11 +861,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * IsTest getter.
+     *
+     * @return bool
+     */
     public function getIsTest(): bool
     {
         return $this->isTest;
     }
 
+    /**
+     * TransactionType setter.
+     *
+     * @param string $transactionType
+     * @return Transaction
+     */
     public function setTransactionType(string $transactionType): Transaction
     {
         $this->transactionType = $transactionType;
@@ -414,11 +884,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * TransactionType getter.
+     *
+     * @return string
+     */
     public function getTransactionType(): string
     {
         return $this->transactionType;
     }
 
+    /**
+     * MutationType setter.
+     *
+     * @param int $mutationType
+     * @return Transaction
+     */
     public function setMutationType(int $mutationType): Transaction
     {
         $this->mutationType = $mutationType;
@@ -426,11 +907,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * MutationType getter.
+     *
+     * @return int
+     */
     public function getMutationType(): int
     {
         return $this->mutationType;
     }
 
+    /**
+     * RelatedTransactions setter.
+     *
+     * @param array $relatedTransactions
+     * @return Transaction
+     */
     public function setRelatedTransactions(?array $relatedTransactions): Transaction
     {
         $this->relatedTransactions = $relatedTransactions;
@@ -438,11 +930,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * RelatedTransactions getter.
+     *
+     * @return array
+     */
     public function getRelatedTransactions(): ?array
     {
         return $this->relatedTransactions;
     }
 
+    /**
+     * ConsumerMessage setter.
+     *
+     * @param string $consumerMessage
+     * @return Transaction
+     */
     public function setConsumerMessage(?string $consumerMessage): Transaction
     {
         $this->consumerMessage = $consumerMessage;
@@ -450,11 +953,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * ConsumerMessage getter.
+     *
+     * @return string
+     */
     public function getConsumerMessage(): ?string
     {
         return $this->consumerMessage;
     }
 
+    /**
+     * Order setter.
+     *
+     * @param string $order
+     * @return Transaction
+     */
     public function setOrder(?string $order): Transaction
     {
         $this->order = $order;
@@ -462,11 +976,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Order getter.
+     *
+     * @return string
+     */
     public function getOrder(): ?string
     {
         return $this->order;
     }
 
+    /**
+     * IssuingCountry setter.
+     *
+     * @param string $issuingCountry
+     * @return Transaction
+     */
     public function setIssuingCountry(?string $issuingCountry): Transaction
     {
         $this->issuingCountry = $issuingCountry;
@@ -474,11 +999,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * IssuingCountry getter.
+     *
+     * @return string
+     */
     public function getIssuingCountry(): ?string
     {
         return $this->issuingCountry;
     }
 
+    /**
+     * Recurring setter.
+     *
+     * @param bool $recurring
+     * @return Transaction
+     */
     public function setRecurring(bool $recurring): Transaction
     {
         $this->recurring = $recurring;
@@ -486,11 +1022,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Recurring getter.
+     *
+     * @return bool
+     */
     public function getRecurring(): bool
     {
         return $this->recurring;
     }
 
+    /**
+     * CustomerName setter.
+     *
+     * @param string $customerName
+     * @return Transaction
+     */
     public function setCustomerName(?string $customerName): Transaction
     {
         $this->customerName = $customerName;
@@ -498,11 +1045,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * CustomerName getter.
+     *
+     * @return string
+     */
     public function getCustomerName(): ?string
     {
         return $this->customerName;
     }
 
+    /**
+     * PayerHash setter.
+     *
+     * @param string $payerHash
+     * @return Transaction
+     */
     public function setPayerHash(?string $payerHash): Transaction
     {
         $this->payerHash = $payerHash;
@@ -510,11 +1068,22 @@ class Transaction
         return $this;
     }
 
+    /**
+     * PayerHash getter.
+     *
+     * @return string
+     */
     public function getPayerHash(): ?string
     {
         return $this->payerHash;
     }
 
+    /**
+     * PaymentKey setter.
+     *
+     * @param string $paymentKey
+     * @return Transaction
+     */
     public function setPaymentKey(string $paymentKey): Transaction
     {
         $this->paymentKey = $paymentKey;
@@ -522,11 +1091,21 @@ class Transaction
         return $this;
     }
 
+    /**
+     * PaymentKey getter.
+     *
+     * @return string
+     */
     public function getPaymentKey(): string
     {
         return $this->paymentKey;
     }
 
+    /**
+     * Execute transaction
+     *
+     * @return Transaction
+     */
     public function execute(): Transaction
     {
         $response = json_decode($this->client->call($this->getData()));
@@ -552,6 +1131,12 @@ class Transaction
         return $this;
     }
 
+    /**
+     * ServiceData setter.
+     *
+     * @param array $services
+     * @return Transaction
+     */
     private function setServiceData(array $services): Transaction
     {
         foreach ($services as $service) {
@@ -561,6 +1146,11 @@ class Transaction
         return $this;
     }
 
+    /**
+     * Data getter.
+     *
+     * @return array
+     */
     private function getData(): array
     {
         $data = [

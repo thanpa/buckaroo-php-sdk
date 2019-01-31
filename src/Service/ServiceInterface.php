@@ -1,6 +1,10 @@
 <?php
 namespace Buckaroo\Service;
 
+/**
+ * Every service class that implements this interface, must implement it's
+ * methods
+ */
 interface ServiceInterface
 {
     public function getAction(): string;
