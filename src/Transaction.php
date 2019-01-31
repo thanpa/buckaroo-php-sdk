@@ -18,6 +18,8 @@ use stdClass;
  */
 class Transaction
 {
+    const VALID_SERVICES = ['ideal'];
+
     /**
      * @var string
      */
@@ -515,6 +517,9 @@ class Transaction
      */
     public function addService(ServiceInterface $service): Transaction
     {
+        if (!in_array($service->getName(), self::VALID_SERVICES)) {
+            throw new UnsupportedPaymentMethodException();
+        }
         $this->services[$service->getName()] = $service;
 
         return $this;
