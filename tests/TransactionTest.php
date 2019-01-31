@@ -2,7 +2,6 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use Buckaroo\Exceptions\UnsupportedPaymentMethodException;
 use Buckaroo\Client;
 use Buckaroo\Transaction;
 use Buckaroo\Service\Ideal;
