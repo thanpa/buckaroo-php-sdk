@@ -128,5 +128,27 @@ final class TransactionTest extends TestCase
         $tr->addService($mockedService);
     }
 
+    /**
+     * @expectedException Buckaroo\Exceptions\UndefinedPaymentMethodException
+     */
+    public function testTransactionWithUndefinedService(): void
+    {
+        $mockedClient = $this->getMockBuilder(Client::class)
+            ->setMethods(['call'])
+            ->getMock();
+
+        $mockedClient->method('call')->willReturn('');
+
+        $mockedService = $this->getMockBuilder(Ideal::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getName'])
+            ->getMock();
+
+        $mockedService->method('getName')->willReturn('');
+
+        $tr = new Transaction();
+        $tr->setClient($mockedClient);
+        $tr->addService($mockedService);
+    }
 }
 

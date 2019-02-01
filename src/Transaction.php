@@ -517,6 +517,9 @@ class Transaction
      */
     public function addService(ServiceInterface $service): Transaction
     {
+        if (empty($service->getName())) {
+            throw new UndefinedPaymentMethodException();
+        }
         if (!in_array($service->getName(), self::VALID_SERVICES)) {
             throw new UnsupportedPaymentMethodException();
         }
