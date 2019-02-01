@@ -150,5 +150,23 @@ final class TransactionTest extends TestCase
         $tr->setClient($mockedClient);
         $tr->addService($mockedService);
     }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testTransactionWithInvalidAmount(): void
+    {
+        $tr = new Transaction();
+        $tr->setAmount('stringInput');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\NegativeAmountException
+     */
+    public function testTransactionWithNegativeAmount(): void
+    {
+        $tr = new Transaction();
+        $tr->setAmount(-10);
+    }
 }
 
