@@ -4,6 +4,7 @@ namespace Buckaroo;
 use Buckaroo\Exceptions\UnsupportedPaymentMethodException;
 use Buckaroo\Exceptions\UndefinedPaymentMethodException;
 use Buckaroo\Exceptions\NegativeAmountException;
+use Buckaroo\Exceptions\InvalidUrlException;
 use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction\ClientIp;
 use Buckaroo\Transaction\Status;
@@ -360,6 +361,7 @@ class Transaction
      */
     public function setReturnUrl(string $returnUrl): Transaction
     {
+        $this->validateUrl($returnUrl);
         $this->returnUrl = $returnUrl;
 
         return $this;
@@ -383,6 +385,7 @@ class Transaction
      */
     public function setReturnUrlCancel(string $returnUrlCancel): Transaction
     {
+        $this->validateUrl($returnUrlCancel);
         $this->returnUrlCancel = $returnUrlCancel;
 
         return $this;
@@ -406,6 +409,7 @@ class Transaction
      */
     public function setReturnUrlError(string $returnUrlError): Transaction
     {
+        $this->validateUrl($returnUrlError);
         $this->returnUrlError = $returnUrlError;
 
         return $this;
@@ -429,6 +433,7 @@ class Transaction
      */
     public function setReturnUrlReject(string $returnUrlReject): Transaction
     {
+        $this->validateUrl($returnUrlReject);
         $this->returnUrlReject = $returnUrlReject;
 
         return $this;
@@ -606,6 +611,7 @@ class Transaction
      */
     public function setPushURL(string $pushURL): Transaction
     {
+        $this->validateUrl($pushURL);
         $this->pushURL = $pushURL;
 
         return $this;
@@ -629,6 +635,7 @@ class Transaction
      */
     public function setPushURLFailure(string $pushURLFailure): Transaction
     {
+        $this->validateUrl($pushURLFailure);
         $this->pushURLFailure = $pushURLFailure;
 
         return $this;
@@ -1179,6 +1186,13 @@ class Transaction
             }
         }
         return $data;
+    }
+
+    private function validateUrl(string $url): void
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new InvalidUrlException();
+        }
     }
 }
 
