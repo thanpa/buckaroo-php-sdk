@@ -7,6 +7,11 @@
          colors="true"
          bootstrap="vendor/autoload.php"
 >
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <!-- define your env variables for the test env here -->
+    </php>
+
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests/</directory>

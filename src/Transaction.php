@@ -808,12 +808,14 @@ class Transaction
      */
     public function setRequiredAction(?stdClass $requiredAction): Transaction
     {
-        $this->requiredAction = (new RequiredAction())
-            ->setRedirectUrl($requiredAction->RedirectURL)
-            ->setRequestedInformation($requiredAction->RequestedInformation)
-            ->setPayRemainderDetails($requiredAction->PayRemainderDetails)
-            ->setName($requiredAction->Name)
-            ->setTypeDeprecated($requiredAction->TypeDeprecated);
+        if ($requiredAction instanceof \stdClass) {
+            $this->requiredAction = (new RequiredAction())
+                ->setRedirectUrl($requiredAction->RedirectURL)
+                ->setRequestedInformation($requiredAction->RequestedInformation)
+                ->setPayRemainderDetails($requiredAction->PayRemainderDetails)
+                ->setName($requiredAction->Name)
+                ->setTypeDeprecated($requiredAction->TypeDeprecated);
+        }
 
         return $this;
     }
