@@ -1,6 +1,8 @@
 <?php
 namespace Buckaroo\Transaction;
 
+use Buckaroo\Exceptions\InvalidUrlException;
+
 /**
  * This class holds information that the developer needs to determine what
  * to do after a successful call to the API. For instance if there is a
@@ -41,6 +43,7 @@ class RequiredAction
      */
     public function setRedirectUrl(?string $redirectUrl): RequiredAction
     {
+        $this->validateUrl($redirectUrl);
         $this->redirectUrl = $redirectUrl;
 
         return $this;
@@ -148,5 +151,17 @@ class RequiredAction
     public function getTypeDeprecated(): int
     {
         return $this->typeDeprecated;
+    }
+
+    /**
+     * Validates the url string.
+     *
+     * @return array
+     */
+    private function validateUrl(string $url): void
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new InvalidUrlException();
+        }
     }
 }

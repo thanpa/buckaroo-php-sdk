@@ -172,5 +172,69 @@ final class IdealTest extends TestCase
 
         $this->assertEquals('ideal', $service->getName());
     }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeIssuerThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setIssuer(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeConsumerIssuerThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setConsumerIssuer(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeTransactionIdThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setTransactionId(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeCustomerAccountNameThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setCustomerAccountName(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeCustomerIbanThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setCustomerIban(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeCustomerBicThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setCustomerBic(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeParametersThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setParameters('invalidParameters');
+    }
+
 }
 

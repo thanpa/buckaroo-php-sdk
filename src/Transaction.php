@@ -1197,6 +1197,11 @@ class Transaction
         return $data;
     }
 
+    /**
+     * Validates the url string.
+     *
+     * @return array
+     */
     private function validateUrl(string $url): void
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {

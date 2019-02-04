@@ -30,5 +30,23 @@ final class ClientIpTest extends TestCase
         $clientIp = new ClientIp();
         $clientIp->setAddress('2');
     }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeTypeThrowsTypeError(): void
+    {
+        $clientIp = new ClientIp();
+        $clientIp->setType('invalidType');
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetInvalidTypeAddressThrowsTypeError(): void
+    {
+        $clientIp = new ClientIp();
+        $clientIp->setAddress(new \stdClass());
+    }
 }
 
