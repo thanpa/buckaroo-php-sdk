@@ -106,7 +106,7 @@ final class TransactionTest extends TestCase
     }
 
     /**
-     * @expectedException Buckaroo\Exceptions\UnsupportedPaymentMethodException
+     * @expectedException Buckaroo\Exceptions\UnsupportedServiceException
      */
     public function testTransactionWithUnsupportedService(): void
     {
@@ -129,7 +129,7 @@ final class TransactionTest extends TestCase
     }
 
     /**
-     * @expectedException Buckaroo\Exceptions\UndefinedPaymentMethodException
+     * @expectedException Buckaroo\Exceptions\UndefinedServiceException
      */
     public function testTransactionWithUndefinedService(): void
     {
