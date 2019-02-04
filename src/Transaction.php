@@ -1,8 +1,8 @@
 <?php
 namespace Buckaroo;
 
-use Buckaroo\Exceptions\UnsupportedPaymentMethodException;
-use Buckaroo\Exceptions\UndefinedPaymentMethodException;
+use Buckaroo\Exceptions\UnsupportedServiceException;
+use Buckaroo\Exceptions\UndefinedServiceException;
 use Buckaroo\Exceptions\NegativeAmountException;
 use Buckaroo\Exceptions\InvalidUrlException;
 use Buckaroo\Service\ServiceInterface;
@@ -27,7 +27,7 @@ class Transaction
     private $currency = '';
 
     /**
-     * @var int
+     * @var float
      */
     private $amount = 0;
 
@@ -526,7 +526,7 @@ class Transaction
     public function addService(ServiceInterface $service): Transaction
     {
         if (empty($service->getName())) {
-            throw new UndefinedPaymentMethodException();
+            throw new UndefinedServiceException();
         }
         $classes = get_declared_classes();
         $implementsServiceInterface = [];
@@ -537,7 +537,7 @@ class Transaction
            }
         }
         if (!in_array($service->getName(), $implementsServiceInterface)) {
-            throw new UnsupportedPaymentMethodException();
+            throw new UnsupportedServiceException();
         }
         $this->services[$service->getName()] = $service;
 
