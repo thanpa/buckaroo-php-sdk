@@ -6,5 +6,5 @@ namespace Buckaroo;
  * implement the same interface as the normal api client.
  */
 interface ClientInterface {
-    public function call(array $data = []);
+    public function call(array $data = []): string;
 }

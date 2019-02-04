@@ -11,6 +11,7 @@ use Buckaroo\Transaction\RequiredAction;
 use Buckaroo\Transaction\Status\Code;
 use DateTime;
 use stdClass;
+use ReflectionClass;
 
 /**
  * This class holds information about the transaction. The information is
@@ -19,8 +20,6 @@ use stdClass;
  */
 class Transaction
 {
-    const VALID_SERVICES = ['ideal'];
-
     /**
      * @var string
      */
@@ -524,7 +523,15 @@ class Transaction
         if (empty($service->getName())) {
             throw new UndefinedPaymentMethodException();
         }
-        if (!in_array($service->getName(), self::VALID_SERVICES)) {
+        $classes = get_declared_classes();
+        $implementsServiceInterface = [];
+        foreach($classes as $class) {
+           $reflect = new ReflectionClass($class);
+           if($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
+              $implementsServiceInterface[] = strtolower(basename(str_replace('\\', '/', $class)));
+           }
+        }
+        if (!in_array($service->getName(), $implementsServiceInterface)) {
             throw new UnsupportedPaymentMethodException();
         }
         $this->services[$service->getName()] = $service;
