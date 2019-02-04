@@ -3,6 +3,7 @@ namespace Buckaroo;
 
 use Buckaroo\Exceptions\UnsupportedPaymentMethodException;
 use Buckaroo\Exceptions\UndefinedPaymentMethodException;
+use Buckaroo\Exceptions\NegativeAmountException;
 use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction\ClientIp;
 use Buckaroo\Transaction\Status;
@@ -262,6 +263,9 @@ class Transaction
      */
     public function setAmount(float $amount): Transaction
     {
+        if ($amount < 0) {
+            throw new NegativeAmountException();
+        }
         $this->amount = $amount;
 
         return $this;
