@@ -165,5 +165,12 @@ final class IdealTest extends TestCase
         $this->assertEquals('NL44RABO0123456789', $service->getCustomerIban());
         $this->assertEquals('RABONL2U', $service->getCustomerBic());
     }
+
+    public function testGetNameReturnsClassName(): void
+    {
+        $service = new Ideal('Pay');
+
+        $this->assertEquals('ideal', $service->getName());
+    }
 }
 

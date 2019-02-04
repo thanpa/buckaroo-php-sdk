@@ -44,7 +44,7 @@ class Ideal extends ServiceAbstract implements ServiceInterface
      */
     public function getName(): string
     {
-        return 'ideal';
+        return strtolower(basename(str_replace('\\', '/', get_class($this))));
     }
 
     /**
