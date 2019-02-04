@@ -1,25 +1,58 @@
 <?php
 namespace Buckaroo\Service;
 
+/**
+ * This class holds information about the response data of the API
+ * that have to do with the ideal payment method actions (pay, refund).
+ */
 class Ideal extends ServiceAbstract implements ServiceInterface
 {
+    /**
+     * @var string
+     */
     protected $issuer = '';
 
+    /**
+     * @var string
+     */
     protected $consumerIssuer = '';
 
+    /**
+     * @var string
+     */
     protected $transactionId = '';
 
+    /**
+     * @var string
+     */
     protected $customerAccountName = '';
 
+    /**
+     * @var string
+     */
     protected $customerIban = '';
 
+    /**
+     * @var string
+     */
     protected $customerBic = '';
 
+    /**
+     * Name getter
+     *
+     * @return string
+     */
     public function getName(): string
     {
         return 'ideal';
     }
 
+    /**
+     * Issuer setter
+     *
+     * @param Issuer $issuer
+     * @return Ideal
+     */
     public function setIssuer(string $issuer): Ideal
     {
         $this->issuer = $issuer;
@@ -27,11 +60,22 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this;
     }
 
+    /**
+     * Issuer getter
+     *
+     * @return string
+     */
     public function getIssuer(): string
     {
         return $this->issuer;
     }
 
+    /**
+     * ConsumerIssuer setter
+     *
+     * @param ConsumerIssuer $consumerIssuer
+     * @return Ideal
+     */
     public function setConsumerIssuer(string $consumerIssuer): Ideal
     {
         $this->consumerIssuer = $consumerIssuer;
@@ -39,11 +83,22 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this;
     }
 
+    /**
+     * ConsumerIssuer getter
+     *
+     * @return string
+     */
     public function getConsumerIssuer(): string
     {
         return $this->consumerIssuer;
     }
 
+    /**
+     * TransactionId setter
+     *
+     * @param TransactionId $transactionId
+     * @return Ideal
+     */
     public function setTransactionId(string $transactionId): Ideal
     {
         $this->transactionId = $transactionId;
@@ -51,11 +106,22 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this;
     }
 
+    /**
+     * TransactionId getter
+     *
+     * @return string
+     */
     public function getTransactionId(): string
     {
         return $this->transactionId;
     }
 
+    /**
+     * CustomerAccountName setter
+     *
+     * @param CustomerAccountName $customerAccountName
+     * @return Ideal
+     */
     public function setCustomerAccountName(string $customerAccountName): Ideal
     {
         $this->customerAccountName = $customerAccountName;
@@ -63,11 +129,22 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this;
     }
 
+    /**
+     * CustomerAccountName getter
+     *
+     * @return string
+     */
     public function getCustomerAccountName(): string
     {
         return $this->customerAccountName;
     }
 
+    /**
+     * CustomerIban setter
+     *
+     * @param string $customerIban
+     * @return Ideal
+     */
     public function setCustomerIban(string $customerIban): Ideal
     {
         $this->customerIban = $customerIban;
@@ -75,23 +152,46 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this;
     }
 
+    /**
+     * CustomerIban getter
+     *
+     * @return string
+     */
     public function getCustomerIban(): string
     {
         return $this->customerIban;
     }
 
+    /**
+     * CustomerBic setter
+     *
+     * @param string $customerBic
+     * @return Ideal
+     */
     public function setCustomerBic(string $customerBic): Ideal
     {
         $this->customerBic = $customerBic;
 
+
         return $this;
     }
 
+    /**
+     * CustomerBic getter
+     *
+     * @return string
+     */
     public function getCustomerBic(): string
     {
         return $this->customerBic;
     }
 
+    /**
+     * Parameter setter
+     *
+     * @param array $parameters
+     * @return Ideal
+     */
     public function setParameters(array $parameters): ServiceInterface
     {
         $parameters = array_combine(array_column($parameters, 'Name'), array_column($parameters, 'Value'));
@@ -113,6 +213,11 @@ class Ideal extends ServiceAbstract implements ServiceInterface
         return $this;
     }
 
+    /**
+     * Transforms the ideal object to array
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         return [
