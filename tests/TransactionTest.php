@@ -108,14 +108,8 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\UnsupportedServiceException
      */
-    public function testTransactionWithUnsupportedService(): void
+    public function testAddUnsupportedServiceThrowsUnsupportedServiceException(): void
     {
-        $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['call'])
-            ->getMock();
-
-        $mockedClient->method('call')->willReturn('');
-
         $mockedService = $this->getMockBuilder(Ideal::class)
             ->disableOriginalConstructor()
             ->setMethods(['getName'])
@@ -124,21 +118,14 @@ final class TransactionTest extends TestCase
         $mockedService->method('getName')->willReturn('notIdeal');
 
         $tr = new Transaction();
-        $tr->setClient($mockedClient);
         $tr->addService($mockedService);
     }
 
     /**
      * @expectedException Buckaroo\Exceptions\UndefinedServiceException
      */
-    public function testTransactionWithUndefinedService(): void
+    public function testAddUndefinedServiceThrowsUndefinedServiceException(): void
     {
-        $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['call'])
-            ->getMock();
-
-        $mockedClient->method('call')->willReturn('');
-
         $mockedService = $this->getMockBuilder(Ideal::class)
             ->disableOriginalConstructor()
             ->setMethods(['getName'])
@@ -147,23 +134,13 @@ final class TransactionTest extends TestCase
         $mockedService->method('getName')->willReturn('');
 
         $tr = new Transaction();
-        $tr->setClient($mockedClient);
         $tr->addService($mockedService);
-    }
-
-    /**
-     * @expectedException \TypeError
-     */
-    public function testTransactionWithInvalidAmount(): void
-    {
-        $tr = new Transaction();
-        $tr->setAmount('stringInput');
     }
 
     /**
      * @expectedException Buckaroo\Exceptions\NegativeAmountException
      */
-    public function testTransactionWithNegativeAmount(): void
+    public function testSetNegativeAmountThrowsNegativeAmountException(): void
     {
         $tr = new Transaction();
         $tr->setAmount(-10);
@@ -172,7 +149,7 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidUrlException
      */
-    public function testTransactionWithInvalidReturnUrl(): void
+    public function testSetInvalidReturnUrlThrowsInvalidUrlException(): void
     {
         $tr = new Transaction();
         $tr->setReturnUrl('invalidUrl');
@@ -181,7 +158,7 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidUrlException
      */
-    public function testTransactionWithInvalidReturnUrlCancel(): void
+    public function testSetInvalidReturnUrlCancelThrowsInvalidUrlException(): void
     {
         $tr = new Transaction();
         $tr->setReturnUrlCancel('invalidUrl');
@@ -190,7 +167,7 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidUrlException
      */
-    public function testTransactionWithInvalidReturnUrlError(): void
+    public function testSetInvalidReturnUrlErrorThrowsInvalidUrlException(): void
     {
         $tr = new Transaction();
         $tr->setReturnUrlError('invalidUrl');
@@ -199,7 +176,7 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidUrlException
      */
-    public function testTransactionWithInvalidReturnUrlReject(): void
+    public function testSetInvalidReturnUrlRejectThrowsInvalidUrlException(): void
     {
         $tr = new Transaction();
         $tr->setReturnUrlReject('invalidUrl');
@@ -208,7 +185,7 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidUrlException
      */
-    public function testTransactionWithInvalidPushUrl(): void
+    public function testSetInvalidPushUrlThrowsInvalidUrlException(): void
     {
         $tr = new Transaction();
         $tr->setPushURL('invalidUrl');
@@ -218,7 +195,7 @@ final class TransactionTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidUrlException
      */
-    public function testTransactionWithInvalidPushURLFailure(): void
+    public function testSetInvalidPushURLFailureThrowsInvalidUrlException(): void
     {
         $tr = new Transaction();
         $tr->setPushURLFailure('invalidUrl');
