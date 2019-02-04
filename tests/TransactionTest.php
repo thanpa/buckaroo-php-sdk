@@ -168,5 +168,60 @@ final class TransactionTest extends TestCase
         $tr = new Transaction();
         $tr->setAmount(-10);
     }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\InvalidUrlException
+     */
+    public function testTransactionWithInvalidReturnUrl(): void
+    {
+        $tr = new Transaction();
+        $tr->setReturnUrl('invalidUrl');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\InvalidUrlException
+     */
+    public function testTransactionWithInvalidReturnUrlCancel(): void
+    {
+        $tr = new Transaction();
+        $tr->setReturnUrlCancel('invalidUrl');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\InvalidUrlException
+     */
+    public function testTransactionWithInvalidReturnUrlError(): void
+    {
+        $tr = new Transaction();
+        $tr->setReturnUrlError('invalidUrl');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\InvalidUrlException
+     */
+    public function testTransactionWithInvalidReturnUrlReject(): void
+    {
+        $tr = new Transaction();
+        $tr->setReturnUrlReject('invalidUrl');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\InvalidUrlException
+     */
+    public function testTransactionWithInvalidPushUrl(): void
+    {
+        $tr = new Transaction();
+        $tr->setPushURL('invalidUrl');
+    }
+
+
+    /**
+     * @expectedException Buckaroo\Exceptions\InvalidUrlException
+     */
+    public function testTransactionWithInvalidPushURLFailure(): void
+    {
+        $tr = new Transaction();
+        $tr->setPushURLFailure('invalidUrl');
+    }
 }
 
