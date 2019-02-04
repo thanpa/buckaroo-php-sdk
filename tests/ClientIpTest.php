@@ -9,13 +9,13 @@ final class ClientIpTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\UnsupportedClientIpTypeException
      */
-    public function testClientIpWithUnsupportedType(): void
+    public function testSetUnsupportedTypeThrowsUnsupportedClientIpTypeException(): void
     {
         $clientIp = new ClientIp();
         $clientIp->setType(2);
     }
 
-    public function testClientIpWithSupportedType(): void
+    public function testSetType(): void
     {
         $clientIp = new ClientIp();
         $clientIp->setType(ClientIp::TYPE_IPV4);
@@ -25,7 +25,7 @@ final class ClientIpTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\InvalidIpAddressException
      */
-    public function testClientIpWithInvalidAddress(): void
+    public function testSetInvalidAddressThrowsInvalidIpAddressException(): void
     {
         $clientIp = new ClientIp();
         $clientIp->setAddress('2');
