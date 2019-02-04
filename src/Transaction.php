@@ -516,6 +516,9 @@ class Transaction
      */
     public function addService(ServiceInterface $service): Transaction
     {
+        if (empty($service->getName())) {
+            throw new UndefinedPaymentMethodException();
+        }
         $classes = get_declared_classes();
         $implementsServiceInterface = [];
         foreach($classes as $class) {
