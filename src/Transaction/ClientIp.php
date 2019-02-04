@@ -11,10 +11,9 @@ use Buckaroo\Exceptions\InvalidIpAddressException;
  */
 class ClientIp
 {
-    const VALID_TYPES = [
-        'IPv4' => 0,
-        'IPv6' => 1
-    ];
+    const TYPE_IPV4 = 0;
+    const TYPE_IPV6 = 1;
+    const VALID_TYPES = [self::TYPE_IPV6, self::TYPE_IPV4];
 
     /**
      * @var int
