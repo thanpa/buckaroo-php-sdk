@@ -1,6 +1,9 @@
 <?php
 namespace Buckaroo\Transaction;
 
+use Buckaroo\Exceptions\UnsupportedClientIpTypeException;
+use Buckaroo\Exceptions\InvalidIpAddressException;
+
 /**
  * This class holds information about the client IP.
  * Type is 0 when IPv4 and 1 when IPv6.
@@ -8,6 +11,10 @@ namespace Buckaroo\Transaction;
  */
 class ClientIp
 {
+    const TYPE_IPV4 = 0;
+    const TYPE_IPV6 = 1;
+    const VALID_TYPES = [self::TYPE_IPV6, self::TYPE_IPV4];
+
     /**
      * @var int
      */
@@ -26,6 +33,9 @@ class ClientIp
      */
     public function setType(int $type): ClientIp
     {
+        if (!in_array($type, self::VALID_TYPES)) {
+            throw new UnsupportedClientIpTypeException();
+        }
         $this->type = $type;
 
         return $this;
@@ -49,6 +59,9 @@ class ClientIp
      */
     public function setAddress(string $address): ClientIp
     {
+        if (!filter_var($address, FILTER_VALIDATE_IP)) {
+            throw new InvalidIpAddressException();
+        }
         $this->address = $address;
 
         return $this;
