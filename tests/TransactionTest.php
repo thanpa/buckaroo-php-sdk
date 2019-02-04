@@ -104,5 +104,29 @@ final class TransactionTest extends TestCase
         $this->assertNull($tr->getPayerHash());
         $this->assertEquals($tr->getPaymentKey(), '644545E2409D4223AC09E880ADXXXXXX');
     }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UnsupportedPaymentMethodException
+     */
+    public function testTransactionWithUnsupportedService(): void
+    {
+        $mockedClient = $this->getMockBuilder(Client::class)
+            ->setMethods(['call'])
+            ->getMock();
+
+        $mockedClient->method('call')->willReturn('');
+
+        $mockedService = $this->getMockBuilder(Ideal::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getName'])
+            ->getMock();
+
+        $mockedService->method('getName')->willReturn('notIdeal');
+
+        $tr = new Transaction();
+        $tr->setClient($mockedClient);
+        $tr->addService($mockedService);
+    }
+
 }
 

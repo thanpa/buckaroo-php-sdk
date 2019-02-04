@@ -10,6 +10,7 @@ use Buckaroo\Transaction\RequiredAction;
 use Buckaroo\Transaction\Status\Code;
 use DateTime;
 use stdClass;
+use ReflectionClass;
 
 /**
  * This class holds information about the transaction. The information is
@@ -515,6 +516,17 @@ class Transaction
      */
     public function addService(ServiceInterface $service): Transaction
     {
+        $classes = get_declared_classes();
+        $implementsServiceInterface = [];
+        foreach($classes as $class) {
+           $reflect = new ReflectionClass($class);
+           if($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
+              $implementsServiceInterface[] = strtolower(basename(str_replace('\\', '/', $class)));
+           }
+        }
+        if (!in_array($service->getName(), $implementsServiceInterface)) {
+            throw new UnsupportedPaymentMethodException();
+        }
         $this->services[$service->getName()] = $service;
 
         return $this;
