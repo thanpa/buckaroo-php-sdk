@@ -15,6 +15,13 @@ final class ClientIpTest extends TestCase
         $clientIp->setType(2);
     }
 
+    public function testClientIpWithSupportedType(): void
+    {
+        $clientIp = new ClientIp();
+        $clientIp->setType(ClientIp::TYPE_IPV4);
+        $this->assertEquals($clientIp->getType(), ClientIp::TYPE_IPV4);
+    }
+
     /**
      * @expectedException Buckaroo\Exceptions\InvalidIpAddressException
      */
