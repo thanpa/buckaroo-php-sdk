@@ -121,7 +121,7 @@ final class TransactionTest extends TestCase
             ->setMethods(['getName'])
             ->getMock();
 
-        $mockedService->method('getName')->willReturn('NotIdeal');
+        $mockedService->method('getName')->willReturn('notIdeal');
 
         $tr = new Transaction();
         $tr->setClient($mockedClient);
