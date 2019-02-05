@@ -82,6 +82,22 @@ class Buckaroo
     }
 
     /**
+     * Populates a transaction from a buckaroo push.
+     *
+     * @param string $pushBody
+     * @return Transaction
+     */
+    public function populateFromPush(string $pushBody): Transaction
+    {
+        $decoded = json_decode($pushBody);
+
+        $transaction = new Transaction();
+        $transaction->populate($decoded->Transaction);
+
+        return $transaction;
+    }
+
+    /**
      * Execute transaction
      *
      * @param Transaction $transaction

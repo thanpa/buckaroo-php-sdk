@@ -218,14 +218,14 @@ class Transaction
             ->setServiceData($response->Services)
             ->setKey($response->Key)
             ->setStatus($response->Status)
-            ->setRequiredAction($response->RequiredAction)
-            ->setRequestErrors($response->RequestErrors)
+            ->setRequiredAction(isset($response->RequiredAction) ? $response->RequiredAction : null)
+            ->setRequestErrors(isset($response->RequestErrors) ? $response->RequestErrors : null)
             ->setServiceCode($response->ServiceCode)
             ->setIsTest($response->IsTest)
             ->setTransactionType($response->TransactionType)
             ->setMutationType($response->MutationType)
             ->setRelatedTransactions($response->RelatedTransactions)
-            ->setConsumerMessage($response->ConsumerMessage)
+            ->setConsumerMessage(isset($response->ConsumerMessage) ? $response->ConsumerMessage : null)
             ->setOrder($response->Order)
             ->setIssuingCountry($response->IssuingCountry)
             ->setRecurring($response->Recurring)
@@ -554,15 +554,8 @@ class Transaction
         if (empty($service->getName())) {
             throw new UndefinedServiceException();
         }
-        $classes = get_declared_classes();
-        $implementsServiceInterface = [];
-        foreach($classes as $class) {
-           $reflect = new ReflectionClass($class);
-           if($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
-              $implementsServiceInterface[] = strtolower(basename(str_replace('\\', '/', $class)));
-           }
-        }
-        if (!in_array($service->getName(), $implementsServiceInterface)) {
+        $declaredServices = $this->getDeclaredServices();
+        if (!in_array($service->getName(), array_keys($declaredServices))) {
             throw new UnsupportedServiceException();
         }
         $this->services[$service->getName()] = $service;
@@ -1164,6 +1157,10 @@ class Transaction
     private function setServiceData(array $services): Transaction
     {
         foreach ($services as $service) {
+            if (!isset($this->services[$service->Name])) {
+                $serviceClassName = $this->getDeclaredServices()[$service->Name];
+                $this->services[$service->Name] = new $serviceClassName($service->Action);
+            }
             $this->getService($service->Name)->setParameters($service->Parameters);
         }
 
@@ -1180,6 +1177,24 @@ class Transaction
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidUrlException();
         }
+    }
+
+    /**
+     * Returns an array with all declared services
+     *
+     * @return array
+     */
+    private function getDeclaredServices(): array
+    {
+        $classes = get_declared_classes();
+        $declaredServices = [];
+        foreach ($classes as $class) {
+           $reflect = new ReflectionClass($class);
+           if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
+              $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
+           }
+        }
+        return $declaredServices;
     }
 }
 

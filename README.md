@@ -81,5 +81,13 @@ $transaction = $buckaroo->getTransaction('THIS-IS-THE-TRANSACTION-KEY');
 
 Then the `$transaction` variable will hold a Transaction instance with all information populated in it.
 
+## Making a transaction instance out of a Buckaroo push ##
+
+```php
+$transaction = $buckaroo->populateFromPush('{...<here goes the request body>...}');
+```
+
+Once again you habe a transaction instance, ready to be used for anything you need.
+
 ## Support ##
 Contact: [www.thanpa.com](https://www.thanpa.com) — hello@thanpa.com — +30 2521105247
