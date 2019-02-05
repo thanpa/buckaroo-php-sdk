@@ -1,11 +1,6 @@
 <?php
 namespace Buckaroo;
 
-use Buckaroo\Exceptions\UnsupportedPaymentMethodException;
-use Buckaroo\Exceptions\UndefinedPaymentMethodException;
-use Buckaroo\Exceptions\NegativeAmountException;
-use Buckaroo\Exceptions\InvalidUrlException;
-use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction;
 
 /**

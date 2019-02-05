@@ -2,8 +2,6 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use Buckaroo\Client;
-use Buckaroo\Buckaroo;
 use Buckaroo\Transaction;
 use Buckaroo\Service\Ideal;
 
