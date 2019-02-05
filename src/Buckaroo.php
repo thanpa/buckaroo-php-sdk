@@ -35,6 +35,21 @@ class Buckaroo
     }
 
     /**
+     * Set necessary keys for Buckaroo API
+     *
+     * @param string $website
+     * @param string $secret
+     * @return Buckaroo
+     */
+    public function setApiKeys(string $website, string $secret): Buckaroo
+    {
+        $this->client->setWebsiteKey($website);
+        $this->client->setSecretKey($secret);
+
+        return $this;
+    }
+
+    /**
      * Client setter.
      *
      * @param ClientInterface $client
@@ -45,6 +60,16 @@ class Buckaroo
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * Client getter.
+     *
+     * @return Buckaroo
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
     }
 
     /**

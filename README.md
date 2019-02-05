@@ -35,7 +35,7 @@ Initializing the Buckaroo API client, and setting your API key.
 
 ```php
 $buckaroo = new \Buckaroo\Buckaroo();
-$buckaroo->setApiKey("TEST_API_KEY");
+$buckaroo->setApiKeys("TEST_API_WEBSITE_KEY", "TEST_API_SECRET_KEY");
 ```
 
 Creating a new payment.
