@@ -30,7 +30,7 @@ final class ClientTest extends TestCase
     public function testInvalidTypeCallThrowsTypeError(): void
     {
         $client = new Client();
-        $client->call('invalidData');
+        $client->setData('string-data-when-expecting-arra-data')->call();
     }
 }
 

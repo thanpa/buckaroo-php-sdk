@@ -12,11 +12,12 @@ final class IdealTest extends TestCase
     public function testPay(): void
     {
         $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['call'])
+            ->setMethods(['getDecodedResponse', 'call'])
             ->getMock();
 
-        $mockedClient->method('call')->willReturn(
-            '{
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode('{
                 "Key": "4E8BD922192746C3918BF4077CXXXXXX",
                 "Status": {
                     "Code": {
@@ -71,7 +72,7 @@ final class IdealTest extends TestCase
                 "CustomerName": null,
                 "PayerHash": null,
                 "PaymentKey": "644545E2409D4223AC09E880ADXXXXXX"
-            }'
+            }')
         );
 
         $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
@@ -87,11 +88,12 @@ final class IdealTest extends TestCase
     public function testRefund(): void
     {
         $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['call'])
+            ->setMethods(['getDecodedResponse', 'call'])
             ->getMock();
 
-        $mockedClient->method('call')->willReturn(
-            '{
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode('{
                 "Key": "F996EE747ECD43CDA8851C5F83XXXXXX",
                 "Status": {
                     "Code": {
@@ -149,7 +151,7 @@ final class IdealTest extends TestCase
                 "CustomerName": "J. de Tèster",
                 "PayerHash": null,
                 "PaymentKey": "AE8B6E18A2684846AAAF06A63FXXXXXX"
-            }'
+            }')
         );
 
         $service = (new Ideal('Refund'))->setIssuer('ABNANL2A');

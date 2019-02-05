@@ -6,13 +6,7 @@ use Buckaroo\Exceptions\UndefinedPaymentMethodException;
 use Buckaroo\Exceptions\NegativeAmountException;
 use Buckaroo\Exceptions\InvalidUrlException;
 use Buckaroo\Service\ServiceInterface;
-use Buckaroo\Transaction\ClientIp;
-use Buckaroo\Transaction\Status;
-use Buckaroo\Transaction\RequiredAction;
-use Buckaroo\Transaction\Status\Code;
-use DateTime;
-use stdClass;
-use ReflectionClass;
+use Buckaroo\Transaction;
 
 /**
  * This class manages transactions. The information is for both request and
@@ -35,6 +29,21 @@ class Buckaroo
     }
 
     /**
+     * Set necessary keys for Buckaroo API
+     *
+     * @param string $website
+     * @param string $secret
+     * @return Buckaroo
+     */
+    public function setApiKeys(string $website, string $secret): Buckaroo
+    {
+        $this->client->setWebsiteKey($website);
+        $this->client->setSecretKey($secret);
+
+        return $this;
+    }
+
+    /**
      * Client setter.
      *
      * @param ClientInterface $client
@@ -48,6 +57,47 @@ class Buckaroo
     }
 
     /**
+     * Client getter.
+     *
+     * @return Buckaroo
+     */
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    /**
+     * Retrieves a transaction.
+     *
+     * @param string $key
+     * @return Transaction
+     */
+    public function getTransaction(string $key): Transaction
+    {
+        $this->client->setPath(sprintf('/transaction/status/%s', $key));
+        $transaction = new Transaction();
+        $transaction->populate($this->client->call()->getDecodedResponse());
+
+        return $transaction;
+    }
+
+    /**
+     * Populates a transaction from a buckaroo push.
+     *
+     * @param string $pushBody
+     * @return Transaction
+     */
+    public function populateFromPush(string $pushBody): Transaction
+    {
+        $decoded = json_decode($pushBody);
+
+        $transaction = new Transaction();
+        $transaction->populate($decoded->Transaction);
+
+        return $transaction;
+    }
+
+    /**
      * Execute transaction
      *
      * @param Transaction $transaction
@@ -55,8 +105,8 @@ class Buckaroo
      */
     public function execute(Transaction $transaction): Buckaroo
     {
-        $response = json_decode($this->client->call((array) $transaction));
-        $transaction->populate($response);
+        $this->client->setPath('/transaction')->setData((array) $transaction);
+        $transaction->populate($this->client->call()->getDecodedResponse());
 
         return $this;
     }

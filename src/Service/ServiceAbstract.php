@@ -13,8 +13,10 @@ abstract class ServiceAbstract
 
     /**
      * Constructor
+     *
+     * @param ?string $action
      */
-    public function __construct(string $action)
+    public function __construct(?string $action)
     {
         $this->action = $action;
     }
