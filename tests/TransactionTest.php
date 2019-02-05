@@ -332,7 +332,7 @@ final class TransactionTest extends TestCase
     public function testSetInvalidTypeRequestErrorsThrowsTypeError(): void
     {
         $tr = new Transaction();
-        $tr->setRequestErrors(new \stdClass());
+        $tr->setRequestErrors([]);
     }
 
     /**

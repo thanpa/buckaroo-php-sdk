@@ -12,7 +12,8 @@ use Buckaroo\Transaction\RequiredAction;
 use Buckaroo\Transaction\Status\Code;
 use Buckaroo\Transaction\TransactionReference;
 use Buckaroo\Transaction\RelatedTransaction;
-use Buckaroo\Transaction\CustomParameter;
+use Buckaroo\Transaction\Parameter;
+use Buckaroo\Transaction\RequestError;
 use DateTime;
 use stdClass;
 use ReflectionClass;
@@ -102,7 +103,7 @@ class Transaction
     /**
      * @var int
      */
-    private $continueOnIncomplete = 0;
+    private $continueOnIncomplete = self::CONTINUE_ON_INCOMPLETE_NO;
 
     /**
      * @var array
@@ -755,7 +756,7 @@ class Transaction
     public function setCustomParameters(stdClass $customParameters): Transaction
     {
         foreach ($customParameters->List as $customParameter) {
-            $customParameterObj = new CustomParameter();
+            $customParameterObj = new Parameter();
             $customParameterObj
                 ->setName($customParameter->Name)
                 ->setValue($customParameter->Value);
@@ -784,7 +785,7 @@ class Transaction
     public function setAdditionalParameters(stdClass $additionalParameters): Transaction
     {
         foreach ($additionalParameters->AdditionalParameter as $additionalParameter) {
-            $additionalParameterObj = new CustomParameter();
+            $additionalParameterObj = new Parameter();
             $additionalParameterObj
                 ->setName($additionalParameter->Name)
                 ->setValue($additionalParameter->Value);
@@ -890,18 +891,26 @@ class Transaction
      * @param stdClass $requestErrors
      * @return Transaction
      */
-    public function setRequestErrors(?RequestErrors $requestErrors): Transaction
+    public function setRequestErrors(?stdClass $requestErrors): Transaction
     {
-        if (!empty($requestErrors)) {
-            foreach ($requestErrors as $errorType => $errorValues) {
-                $this->requestErrors[$errorType] = [];
-                foreach ($errorValues as $errorValue) {
-                    $requestError = new RequestError();
-                    foreach ($errorValue as $name => $value) {
-                        $requestError->sprintf('set%s', $name)($value);
-                    }
-                    $this->requestErrors[$errorType][] = $requestError;
-                }var_dump($this->requestErrors);die;
+
+        if (empty($requestErrors)) {
+            $this->requestErrors = $requestErrors;
+            return $this;
+        }
+
+        $this->requestErrors = [];
+        foreach ($requestErrors as $errorType => $errorValues) {
+            foreach ($errorValues as $specificError) {
+                $requestError = new RequestError();
+                $requestError
+                    ->setGroup($errorType)
+                    ->setService(isset($specificError->Service) ? $specificError->Service : '')
+                    ->setAction(isset($specificError->Action) ? $specificError->Action : '')
+                    ->setName(isset($specificError->Name) ? $specificError->Name : '')
+                    ->setError(isset($specificError->Error) ? $specificError->Error : '')
+                    ->setErrorMessage(isset($specificError->ErrorMessage) ? $specificError->ErrorMessage : '');
+                $this->requestErrors[] = $requestError;
             }
         }
 
@@ -913,7 +922,7 @@ class Transaction
      *
      * @return RequestErrors
      */
-    public function getRequestErrors(): ?RequestErrors
+    public function getRequestErrors(): ?array
     {
         return $this->requestErrors;
     }
@@ -1018,14 +1027,16 @@ class Transaction
      */
     public function setRelatedTransactions(?array $relatedTransactions): Transaction
     {
-        if (!empty($relatedTransactions)) {
-            foreach ($relatedTransactions as $relatedTransaction) {
-                $relatedTransactionObj = new RelatedTransaction();
-                $relatedTransactionObj
-                    ->setRelationType($relatedTransaction->RelationType)
-                    ->setRelatedTransactionKey($relatedTransaction->RelatedTransactionKey);
-                    $this->relatedTransactions[] = $relatedTransactionObj;
-            }
+        if (empty($relatedTransactions)) {
+            return $this;
+        }
+
+        foreach ($relatedTransactions as $relatedTransaction) {
+            $relatedTransactionObj = new RelatedTransaction();
+            $relatedTransactionObj
+                ->setRelationType($relatedTransaction->RelationType)
+                ->setRelatedTransactionKey($relatedTransaction->RelatedTransactionKey);
+                $this->relatedTransactions[] = $relatedTransactionObj;
         }
 
         return $this;

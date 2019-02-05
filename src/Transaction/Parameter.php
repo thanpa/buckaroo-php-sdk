@@ -4,7 +4,7 @@ namespace Buckaroo\Transaction;
 /**
  * This class holds information about the custom parameter of the transaction.
  */
-class CustomParameter
+class Parameter
 {
 
     /**

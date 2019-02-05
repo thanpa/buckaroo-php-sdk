@@ -32,6 +32,11 @@ class RequestError
     private $errorMessage = '';
 
     /**
+     * @var string
+     */
+    private $group = '';
+
+    /**
      * Service setter
      *
      * @param string $service
@@ -144,5 +149,29 @@ class RequestError
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
+    }
+
+
+    /**
+     * Group setter
+     *
+     * @param string $group
+     * @return RequestError
+     */
+    public function setGroup(string $group): RequestError
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Group getter
+     *
+     * @return string
+     */
+    public function getGroup(): string
+    {
+        return $this->group;
     }
 }
