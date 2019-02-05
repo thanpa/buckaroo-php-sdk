@@ -12,11 +12,12 @@ final class TransactionTest extends TestCase
     public function testTransactionExecutes(): void
     {
         $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['call'])
+            ->setMethods(['getDecodedResponse', 'call'])
             ->getMock();
 
-        $mockedClient->method('call')->willReturn(
-            '{
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode('{
                 "Key": "4E8BD922192746C3918BF4077CXXXXXX",
                 "Status": {
                     "Code": {
@@ -71,7 +72,7 @@ final class TransactionTest extends TestCase
                 "CustomerName": null,
                 "PayerHash": null,
                 "PaymentKey": "644545E2409D4223AC09E880ADXXXXXX"
-            }'
+            }')
         );
 
         $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');

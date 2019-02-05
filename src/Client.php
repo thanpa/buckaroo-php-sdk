@@ -19,7 +19,22 @@ class Client implements ClientInterface
     /**
      * @var string
      */
-    private $url = 'https://testcheckout.buckaroo.nl/json/Transaction';
+    private $url = 'https://testcheckout.buckaroo.nl/json%s';
+
+    /**
+     * @var string
+     */
+    private $path = '';
+
+    /**
+     * @var array
+     */
+    private $data = [];
+
+    /**
+     * @var string
+     */
+    private $response = '';
 
     /**
      * WebsiteKey setter.
@@ -68,17 +83,85 @@ class Client implements ClientInterface
     }
 
     /**
-     * Call to Buckaroo api
+     * Path setter.
      *
-     * @param array $data
+     * @param string $path
+     * @return Client
+     */
+    public function setPath(string $path): Client
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * Path getter.
+     *
      * @return string
      */
-    public function call(array $data = []): string
+    public function getPath(): string
     {
-        $method = count($data) === 0 ? 'GET' : 'POST';
-        $headers = [$this->getAuthorizationHeader($method, $data)];
-        $body = json_encode($data);
-        $ch = curl_init($this->url);
+        return $this->path;
+    }
+
+    /**
+     * Data setter.
+     *
+     * @param array $data
+     * @return Client
+     */
+    public function setData(array $data): Client
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Data getter.
+     *
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * Response setter.
+     *
+     * @param string $response
+     * @return Client
+     */
+    public function setResponse(string $response): Client
+    {
+        $this->response = $response;
+
+        return $this;
+    }
+
+    /**
+     * Response getter.
+     *
+     * @return string
+     */
+    public function getResponse(): string
+    {
+        return $this->response;
+    }
+
+    /**
+     * Call to Buckaroo api
+     *
+     * @return Client
+     */
+    public function call(): ClientInterface
+    {
+        $method = count($this->data) === 0 ? 'GET' : 'POST';
+        $headers = [$this->getAuthorizationHeader($method, $this->data)];
+        $body = json_encode($this->data);
+        $ch = curl_init($this->getUrl());
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if ($method === 'POST') {
@@ -87,22 +170,34 @@ class Client implements ClientInterface
         }
         $result = curl_exec($ch);
         curl_close($ch);
-        return $result;
+        $this->response = $result;
+
+        return $this;
+    }
+
+    /**
+     * Returns the devoded response, based on json_decode
+     *
+     * @return stdClass
+     */
+    public function getDecodedResponse(): \stdClass
+    {
+        return json_decode($this->response);
     }
 
     /**
      * AuthorizationHeader getter
      *
      * @param string $method
-     * @param array  $data
+     * @param array  $this->data
      * @return string
      */
-    private function getAuthorizationHeader(string $method, array $data): string
+    private function getAuthorizationHeader(string $method): string
     {
-        ksort($data);
-        $post = base64_encode(md5(json_encode($data), true));
+        ksort($this->data);
+        $post = base64_encode(md5(json_encode($this->data), true));
 
-        $url = strtolower(urlencode($this->url));
+        $url = strtolower(urlencode($this->getUrl()));
         $nonce = sprintf('nonce_%d', mt_rand(0000000, 9999999));
         $time = time();
 
@@ -111,5 +206,15 @@ class Client implements ClientInterface
         $hmac = base64_encode($s);
 
         return sprintf('"hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
+    }
+
+    /**
+     * Builds the URL to call
+     *
+     * @return string
+     */
+    private function getUrl(): string
+    {
+        return sprintf($this->url, $this->path);
     }
 }
