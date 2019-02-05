@@ -2,6 +2,8 @@
 namespace Buckaroo\Transaction;
 
 use Buckaroo\Exceptions\InvalidUrlException;
+use Buckaroo\Transaction\RequiredAction\RequestedInformation;
+use Buckaroo\Transaction\RequiredAction\PayRemainderDetails;
 
 /**
  * This class holds information that the developer needs to determine what
@@ -16,14 +18,14 @@ class RequiredAction
     private $redirectUrl = '';
 
     /**
-     * @var string
+     * @var RequestedInformation
      */
-    private $requestedInformation = '';
+    private $requestedInformation;
 
     /**
-     * @var string
+     * @var PayRemainderDetails
      */
-    private $payRemainderDetails = '';
+    private $payRemainderDetails;
 
     /**
      * @var string
@@ -62,10 +64,10 @@ class RequiredAction
     /**
      * RequestedInformation setter
      *
-     * @param string $requestedInformation
+     * @param RequestedInformation $requestedInformation
      * @return RequiredAction
      */
-    public function setRequestedInformation(?string $requestedInformation): RequiredAction
+    public function setRequestedInformation(?RequestedInformation $requestedInformation): RequiredAction
     {
         $this->requestedInformation = $requestedInformation;
 
@@ -78,7 +80,7 @@ class RequiredAction
      *
      * @return string
      */
-    public function getRequestedInformation(): ?string
+    public function getRequestedInformation(): ?RequestedInformation
     {
         return $this->requestedInformation;
     }
@@ -86,10 +88,10 @@ class RequiredAction
     /**
      * PayRemainderDetails setter
      *
-     * @param string $payRemainderDetails
+     * @param PayRemainderDetails $payRemainderDetails
      * @return RequiredAction
      */
-    public function setPayRemainderDetails(?string $payRemainderDetails): RequiredAction
+    public function setPayRemainderDetails(?PayRemainderDetails $payRemainderDetails): RequiredAction
     {
         $this->payRemainderDetails = $payRemainderDetails;
 
@@ -100,7 +102,7 @@ class RequiredAction
     /**
      * PayRemainderDetails getter
      *
-     * @return string
+     * @return PayRemainderDetails
      */
     public function getPayRemainderDetails(): ?string
     {

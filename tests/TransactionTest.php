@@ -312,7 +312,7 @@ final class TransactionTest extends TestCase
     public function testSetInvalidTypeContinueOnIncompleteThrowsTypeError(): void
     {
         $tr = new Transaction();
-        $tr->setContinueOnIncomplete(new \stdClass());
+        $tr->setContinueOnIncomplete('stringValue');
     }
 
     /**
