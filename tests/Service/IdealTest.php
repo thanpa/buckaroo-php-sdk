@@ -3,6 +3,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Buckaroo\Client;
+use Buckaroo\Buckaroo;
 use Buckaroo\Transaction;
 use Buckaroo\Service\Ideal;
 
@@ -73,12 +74,10 @@ final class IdealTest extends TestCase
             }'
         );
 
-        $service = new Ideal('Pay');
-        $service->setIssuer('ABNANL2A');
-
-        $tr = new Transaction();
-        $tr->setClient($mockedClient);
-        $tr->addService($service)->execute();
+        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
+        $tr = (new Transaction())->addService($service);
+        $buckaroo = new Buckaroo();
+        $buckaroo->setClient($mockedClient)->execute($tr);
 
         $this->assertEquals($service->getAction(), 'Pay');
         $this->assertEquals($service->getConsumerIssuer(), 'ABN AMRO');
@@ -153,12 +152,10 @@ final class IdealTest extends TestCase
             }'
         );
 
-        $service = new Ideal('Refund');
-        $service->setIssuer('ABNANL2A');
-
-        $tr = new Transaction();
-        $tr->setClient($mockedClient);
-        $tr->addService($service)->execute();
+        $service = (new Ideal('Refund'))->setIssuer('ABNANL2A');
+        $tr = (new Transaction())->addService($service);
+        $buckaroo = new Buckaroo();
+        $buckaroo->setClient($mockedClient)->execute($tr);
 
         $this->assertEquals('Refund', $service->getAction());
         $this->assertEquals('J. de Tèster', $service->getCustomerAccountName());

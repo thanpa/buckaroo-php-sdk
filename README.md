@@ -34,8 +34,8 @@ To successfully receive a payment, these steps should be implemented:
 Initializing the Buckaroo API client, and setting your API key.
 
 ```php
-$transaction = new \Buckaroo\Transaction();
-$transaction->setApiKey("TEST_API_KEY");
+$buckaroo = new \Buckaroo\Buckaroo();
+$buckaroo->setApiKey("TEST_API_KEY");
 ```
 
 Creating a new payment.
@@ -46,14 +46,19 @@ $service->setIssuer('ABNANL2A');
 ```
 _You have to provide the type of the transaction (Pay or Refund)_
 
-Finally, execution of the transaction.
+Then add the payment to a newly created transaction
 
 ```php
 $transaction
     ->addService($service)
     ->setAmount(10.00)
-    ->setInvoice('#CG0001')
-    ->execute();
+    ->setInvoice('#CG0001');
+```
+
+Finally, execution of the transaction.
+
+```php
+$buckaroo->execute($transaction);
 ```
 _After executing, the transaction key can be retrieved from the `$transaction->getKey()` method._
 

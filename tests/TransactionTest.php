@@ -3,6 +3,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Buckaroo\Client;
+use Buckaroo\Buckaroo;
 use Buckaroo\Transaction;
 use Buckaroo\Service\Ideal;
 
@@ -73,11 +74,12 @@ final class TransactionTest extends TestCase
             }'
         );
 
-        $service = new Ideal('Pay');
+        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
 
-        $tr = new Transaction();
-        $tr->setClient($mockedClient);
-        $tr->addService($service)->execute();
+        $tr = (new Transaction())->addService($service);
+
+        $buckaroo = new Buckaroo();
+        $buckaroo->setClient($mockedClient)->execute($tr);
 
         $this->assertEquals($tr->getKey(), '4E8BD922192746C3918BF4077CXXXXXX');
         $this->assertEquals($tr->getStatus()->getCode()->getCode(), 791);
@@ -115,6 +117,12 @@ final class TransactionTest extends TestCase
             ->getMock();
 
         $mockedService->method('getName')->willReturn('notIdeal');
+
+        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
+
+        $tr = (new Transaction())->addService($mockedService);
+
+        $buckaroo->setClient($mockedClient)->execute();
 
         $tr = new Transaction();
         $tr->addService($mockedService);
@@ -215,15 +223,6 @@ final class TransactionTest extends TestCase
     {
         $tr = new Transaction();
         $tr->setCurrency(new \stdClass());
-    }
-
-    /**
-     * @expectedException \TypeError
-     */
-    public function testSetInvalidTypeClientThrowsTypeError(): void
-    {
-        $tr = new Transaction();
-        $tr->setClient('InvalidClient');
     }
 
     /**

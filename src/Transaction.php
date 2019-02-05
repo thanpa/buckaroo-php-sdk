@@ -15,9 +15,9 @@ use stdClass;
 use ReflectionClass;
 
 /**
- * This class holds information about the transaction. The information is
- * for both request and response data. The execution of the transaction
- * uses the request data to set the response data.
+ * This class holds information about the transaction. It's kept thin
+ * to just be a data wrapper for a transaction as it comes from the
+ * buckaroo API.
  */
 class Transaction
 {
@@ -207,29 +207,55 @@ class Transaction
     private $paymentKey = '';
 
     /**
-     * @var Client
+     * Populates all fields of the transaction
+     *
+     * @param stdClass $response
+     * @return Transaction
      */
-    private $client;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
+    public function populate(stdClass $response): Transaction
     {
-        $this->client = new Client();
+        $this
+            ->setServiceData($response->Services)
+            ->setKey($response->Key)
+            ->setStatus($response->Status)
+            ->setRequiredAction($response->RequiredAction)
+            ->setRequestErrors($response->RequestErrors)
+            ->setServiceCode($response->ServiceCode)
+            ->setIsTest($response->IsTest)
+            ->setTransactionType($response->TransactionType)
+            ->setMutationType($response->MutationType)
+            ->setRelatedTransactions($response->RelatedTransactions)
+            ->setConsumerMessage($response->ConsumerMessage)
+            ->setOrder($response->Order)
+            ->setIssuingCountry($response->IssuingCountry)
+            ->setRecurring($response->Recurring)
+            ->setCustomerName($response->CustomerName)
+            ->setPayerHash($response->PayerHash)
+            ->setPaymentKey($response->PaymentKey);
+        return $this;
     }
 
     /**
-     * Client setter.
+     * Array representation of a transaction
      *
-     * @param ClientInterface $client
-     * @return Transaction
+     * @return array
      */
-    public function setClient(ClientInterface $client): Transaction
+    public function __toArray(): array
     {
-        $this->client = $client;
-
-        return $this;
+        $data = [
+            'Currency' => $this->getCurrency(),
+            'Invoice' => $this->getInvoice(),
+            'Service' => ['ServiceList' => []],
+        ];
+        foreach ($this->getServices() as $service) {
+            $data['Service']['ServiceList'][] = $service->toArray();
+            if ($service->getAction() === 'Pay') {
+                $data['AmountDebit'] = $this->getAmount();
+            } elseif ($service->getAction() === 'Refund') {
+                $data['AmountCredit'] = $this->getAmount();
+            }
+        }
+        return $data;
     }
 
     /**
@@ -1130,36 +1156,6 @@ class Transaction
     }
 
     /**
-     * Execute transaction
-     *
-     * @return Transaction
-     */
-    public function execute(): Transaction
-    {
-        $response = json_decode($this->client->call($this->getData()));
-        $this
-            ->setServiceData($response->Services)
-            ->setKey($response->Key)
-            ->setStatus($response->Status)
-            ->setRequiredAction($response->RequiredAction)
-            ->setRequestErrors($response->RequestErrors)
-            ->setServiceCode($response->ServiceCode)
-            ->setIsTest($response->IsTest)
-            ->setTransactionType($response->TransactionType)
-            ->setMutationType($response->MutationType)
-            ->setRelatedTransactions($response->RelatedTransactions)
-            ->setConsumerMessage($response->ConsumerMessage)
-            ->setOrder($response->Order)
-            ->setIssuingCountry($response->IssuingCountry)
-            ->setRecurring($response->Recurring)
-            ->setCustomerName($response->CustomerName)
-            ->setPayerHash($response->PayerHash)
-            ->setPaymentKey($response->PaymentKey);
-
-        return $this;
-    }
-
-    /**
      * ServiceData setter.
      *
      * @param array $services
@@ -1172,29 +1168,6 @@ class Transaction
         }
 
         return $this;
-    }
-
-    /**
-     * Data getter.
-     *
-     * @return array
-     */
-    private function getData(): array
-    {
-        $data = [
-            'Currency' => $this->getCurrency(),
-            'Invoice' => $this->getInvoice(),
-            'Service' => ['ServiceList' => []],
-        ];
-        foreach ($this->getServices() as $service) {
-            $data['Service']['ServiceList'][] = $service->toArray();
-            if ($service->getAction() === 'Pay') {
-                $data['AmountDebit'] = $this->getAmount();
-            } elseif ($service->getAction() === 'Refund') {
-                $data['AmountCredit'] = $this->getAmount();
-            }
-        }
-        return $data;
     }
 
     /**
