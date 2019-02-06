@@ -1,18 +1,15 @@
 <?php
 namespace Buckaroo;
 
-use Buckaroo\Exceptions\UnsupportedServiceException;
-use Buckaroo\Exceptions\UndefinedServiceException;
 use Buckaroo\Exceptions\NegativeAmountException;
-use Buckaroo\Exceptions\InvalidUrlException;
 use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction\ClientIp;
 use Buckaroo\Transaction\Status;
 use Buckaroo\Transaction\RequiredAction;
 use Buckaroo\Transaction\Status\Code;
+use Buckaroo\Validators\Validator;
 use DateTime;
 use stdClass;
-use ReflectionClass;
 
 /**
  * This class holds information about the transaction. It's kept thin
@@ -207,6 +204,21 @@ class Transaction
     private $paymentKey = '';
 
     /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
+     * Constructor
+     *
+     * @param ?string $action
+     */
+    public function __construct()
+    {
+        $this->validator = new Validator();
+    }
+
+    /**
      * Populates all fields of the transaction
      *
      * @param stdClass $response
@@ -266,7 +278,7 @@ class Transaction
      */
     public function setCurrency(string $currency): Transaction
     {
-        // Filter valid currency
+        $this->validator->validateCurrency($currency);
         $this->currency = $currency;
 
         return $this;
@@ -386,7 +398,7 @@ class Transaction
      */
     public function setReturnUrl(string $returnUrl): Transaction
     {
-        $this->validateUrl($returnUrl);
+        $this->validator->validateUrl($returnUrl);
         $this->returnUrl = $returnUrl;
 
         return $this;
@@ -410,7 +422,7 @@ class Transaction
      */
     public function setReturnUrlCancel(string $returnUrlCancel): Transaction
     {
-        $this->validateUrl($returnUrlCancel);
+        $this->validator->validateUrl($returnUrlCancel);
         $this->returnUrlCancel = $returnUrlCancel;
 
         return $this;
@@ -434,7 +446,7 @@ class Transaction
      */
     public function setReturnUrlError(string $returnUrlError): Transaction
     {
-        $this->validateUrl($returnUrlError);
+        $this->validator->validateUrl($returnUrlError);
         $this->returnUrlError = $returnUrlError;
 
         return $this;
@@ -458,7 +470,7 @@ class Transaction
      */
     public function setReturnUrlReject(string $returnUrlReject): Transaction
     {
-        $this->validateUrl($returnUrlReject);
+        $this->validator->validateUrl($returnUrlReject);
         $this->returnUrlReject = $returnUrlReject;
 
         return $this;
@@ -551,13 +563,8 @@ class Transaction
      */
     public function addService(ServiceInterface $service): Transaction
     {
-        if (empty($service->getName())) {
-            throw new UndefinedServiceException();
-        }
-        $declaredServices = $this->getDeclaredServices();
-        if (!in_array($service->getName(), array_keys($declaredServices))) {
-            throw new UnsupportedServiceException();
-        }
+        $this->validator->validateService($service);
+
         $this->services[$service->getName()] = $service;
 
         return $this;
@@ -637,7 +644,7 @@ class Transaction
      */
     public function setPushURL(string $pushURL): Transaction
     {
-        $this->validateUrl($pushURL);
+        $this->validator->validateUrl($pushURL);
         $this->pushURL = $pushURL;
 
         return $this;
@@ -661,7 +668,7 @@ class Transaction
      */
     public function setPushURLFailure(string $pushURLFailure): Transaction
     {
-        $this->validateUrl($pushURLFailure);
+        $this->validator->validateUrl($pushURLFailure);
         $this->pushURLFailure = $pushURLFailure;
 
         return $this;
@@ -1158,43 +1165,13 @@ class Transaction
     {
         foreach ($services as $service) {
             if (!isset($this->services[$service->Name])) {
-                $serviceClassName = $this->getDeclaredServices()[$service->Name];
+                $serviceClassName = $this->validator->getDeclaredServices()[$service->Name];
                 $this->services[$service->Name] = new $serviceClassName($service->Action);
             }
             $this->getService($service->Name)->setParameters($service->Parameters);
         }
 
         return $this;
-    }
-
-    /**
-     * Validates the url string.
-     *
-     * @return array
-     */
-    private function validateUrl(string $url): void
-    {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new InvalidUrlException();
-        }
-    }
-
-    /**
-     * Returns an array with all declared services
-     *
-     * @return array
-     */
-    private function getDeclaredServices(): array
-    {
-        $classes = get_declared_classes();
-        $declaredServices = [];
-        foreach ($classes as $class) {
-           $reflect = new ReflectionClass($class);
-           if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
-              $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
-           }
-        }
-        return $declaredServices;
     }
 }
 

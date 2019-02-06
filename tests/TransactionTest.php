@@ -109,6 +109,15 @@ final class TransactionTest extends TestCase
     }
 
     /**
+     * @expectedException Buckaroo\Exceptions\InvalidCurrencyException
+     */
+    public function testSetInvalidCurrencyThrowsInvalidCurrencyException(): void
+    {
+        $tr = new Transaction();
+        $tr->setCurrency('invalidCurrency');
+    }
+
+    /**
      * @expectedException \TypeError
      */
     public function testSetInvalidTypeAmountThrowsTypeError(): void
