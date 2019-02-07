@@ -356,6 +356,8 @@ final class BuckarooTest extends TestCase
 
         $transaction = (new Transaction())
             ->setAmount(50)
+            ->setInvoice('testInvoice')
+            ->setCurrency('EUR')
             ->addService($service);
 
         $buckaroo->execute($transaction);
