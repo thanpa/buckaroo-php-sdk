@@ -2,6 +2,7 @@
 namespace Buckaroo\Transaction;
 
 use Buckaroo\Exceptions\InvalidUrlException;
+use Buckaroo\Validators\Validator;
 use Buckaroo\Transaction\RequiredAction\RequestedInformation;
 use Buckaroo\Transaction\RequiredAction\PayRemainderDetails;
 
@@ -38,6 +39,21 @@ class RequiredAction
     private $typeDeprecated = 0;
 
     /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
+     * Constructor
+     *
+     * @param ?string $action
+     */
+    public function __construct()
+    {
+        $this->validator = new Validator();
+    }
+
+    /**
      * RedirectUrl setter
      *
      * @param string $redirectUrl
@@ -45,7 +61,7 @@ class RequiredAction
      */
     public function setRedirectUrl(?string $redirectUrl): RequiredAction
     {
-        $this->validateUrl($redirectUrl);
+        $this->validator->validateUrl($redirectUrl);
         $this->redirectUrl = $redirectUrl;
 
         return $this;
@@ -153,17 +169,5 @@ class RequiredAction
     public function getTypeDeprecated(): int
     {
         return $this->typeDeprecated;
-    }
-
-    /**
-     * Validates the url string.
-     *
-     * @return array
-     */
-    private function validateUrl(string $url): void
-    {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new InvalidUrlException();
-        }
     }
 }

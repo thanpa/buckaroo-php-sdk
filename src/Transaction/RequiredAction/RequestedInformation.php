@@ -1,6 +1,8 @@
 <?php
 namespace Buckaroo\Transaction\RequiredAction;
 
+use Buckaroo\Validators\Validator;
+
 /**
  * This class holds information that the developer needs to determine what
  * to do after a successful call to the API. For instance if there is a
@@ -8,26 +10,26 @@ namespace Buckaroo\Transaction\RequiredAction;
  */
 class RequestedInformation
 {
-    const TYPE_STRING = 0;
-    const TYPE_INTEGER = 1;
-    const TYPE_DECIMAL = 2;
-    const TYPE_DATE = 3;
-    const TYPE_DATETIME = 4;
-    const TYPE_BOOLEAN = 5;
-    const TYPE_CARD_NUMBER = 6;
-    const TYPE_EXPIRY_DATE = 7;
-    const TYPE_CARD_START_DATE = 8;
-    const VALID_TYPES =
+    const DATA_TYPE_STRING = 0;
+    const DATA_TYPE_INTEGER = 1;
+    const DATA_TYPE_DECIMAL = 2;
+    const DATA_TYPE_DATE = 3;
+    const DATA_TYPE_DATETIME = 4;
+    const DATA_TYPE_BOOLEAN = 5;
+    const DATA_TYPE_CARD_NUMBER = 6;
+    const DATA_TYPE_EXPIRY_DATE = 7;
+    const DATA_TYPE_CARD_START_DATE = 8;
+    const VALID_DATA_TYPES =
         [
-            self::TYPE_STRING,
-            self::TYPE_INTEGER,
-            self::TYPE_DECIMAL,
-            self::TYPE_DATE,
-            self::TYPE_DATETIME,
-            self::TYPE_BOOLEAN,
-            self::TYPE_CARD_NUMBER,
-            self::TYPE_EXPIRY_DATE,
-            self::TYPE_CARD_START_DATE
+            self::DATA_TYPE_STRING,
+            self::DATA_TYPE_INTEGER,
+            self::DATA_TYPE_DECIMAL,
+            self::DATA_TYPE_DATE,
+            self::DATA_TYPE_DATETIME,
+            self::DATA_TYPE_BOOLEAN,
+            self::DATA_TYPE_CARD_NUMBER,
+            self::DATA_TYPE_EXPIRY_DATE,
+            self::DATA_TYPE_CARD_START_DATE
         ];
 
     /**
@@ -54,6 +56,21 @@ class RequestedInformation
      * @var string
      */
     private $description;
+
+    /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
+     * Constructor
+     *
+     * @param ?string $action
+     */
+    public function __construct()
+    {
+        $this->validator = new Validator();
+    }
 
     /**
      * Name setter
@@ -86,6 +103,7 @@ class RequestedInformation
      */
     public function setDataType(int $dataType): RequestedInformation
     {
+        $this->validator->validateRequestedInformationDataType($dataType);
         $this->dataType = $dataType;
 
         return $this;
