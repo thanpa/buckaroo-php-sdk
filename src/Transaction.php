@@ -846,10 +846,14 @@ class Transaction
     public function setStatus(stdClass $status): Transaction
     {
         $code = (new Code())->setCode($status->Code->Code)->setDescription($status->Code->Description);
-        $subcode = (new Code())->setCode($status->SubCode->Code)->setDescription($status->SubCode->Description);
         $datetime = new DateTime($status->DateTime);
+        $this->status = (new Status())->setCode($code)->setDateTime($datetime);
 
-        $this->status = (new Status())->setCode($code)->setSubcode($subcode)->setDateTime($datetime);
+        if ($status->SubCode !== null) {
+            $subcode = (new Code())->setCode($status->SubCode->Code)->setDescription($status->SubCode->Description);
+            $this->status->setSubcode($subcode);
+        }
+
 
         return $this;
     }
@@ -942,7 +946,7 @@ class Transaction
      * @param string $serviceCode
      * @return Transaction
      */
-    public function setServiceCode(string $serviceCode): Transaction
+    public function setServiceCode(?string $serviceCode): Transaction
     {
         $this->serviceCode = $serviceCode;
 
@@ -988,7 +992,7 @@ class Transaction
      * @param string $transactionType
      * @return Transaction
      */
-    public function setTransactionType(string $transactionType): Transaction
+    public function setTransactionType(?string $transactionType): Transaction
     {
         $this->transactionType = $transactionType;
 
@@ -1206,7 +1210,7 @@ class Transaction
      * @param string $paymentKey
      * @return Transaction
      */
-    public function setPaymentKey(string $paymentKey): Transaction
+    public function setPaymentKey(?string $paymentKey): Transaction
     {
         $this->paymentKey = $paymentKey;
 
@@ -1229,8 +1233,11 @@ class Transaction
      * @param array $services
      * @return Transaction
      */
-    private function setServiceData(array $services): Transaction
+    private function setServiceData(?array $services): Transaction
     {
+        if (empty($services)) {
+            return $this;
+        }
         foreach ($services as $service) {
             if (!isset($this->services[$service->Name])) {
                 $serviceClassName = ServiceAbstract::getDeclaredServices()[$service->Name];

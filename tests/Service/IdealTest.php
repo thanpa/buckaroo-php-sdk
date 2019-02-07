@@ -12,7 +12,11 @@ final class IdealTest extends TestCase
     public function testPay(): void
     {
         $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
-        $tr = (new Transaction())->addService($service);
+        $tr = (new Transaction())
+            ->addService($service)
+            ->setAmount(10.00)
+            ->setInvoice('testInvoice')
+            ->setCurrency('EUR');
         $buckaroo = new Buckaroo();
         $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
         $buckaroo->execute($tr);
@@ -24,11 +28,30 @@ final class IdealTest extends TestCase
 
     public function testRefund(): void
     {
-        $service = (new Ideal('Refund'))->setIssuer('ABNANL2A');
-        $tr = (new Transaction())->addService($service);
+        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
+        $trPay = (new Transaction())
+            ->addService($service)
+            ->setAmount(10.00)
+            ->setInvoice('testInvoice')
+            ->setCurrency('EUR');
         $buckaroo = new Buckaroo();
         $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $buckaroo->execute($tr);
+        $buckaroo->execute($trPay);
+
+        $service = (new Ideal('Refund'))
+            ->setIssuer('ABNANL2A')
+            ->setCustomerAccountName('J. de Tèster')
+            ->setCustomerIban('NL44RABO0123456789')
+            ->setCustomerBic('RABONL2U');
+        $trRefund = (new Transaction())
+            ->addService($service)
+            ->setAmount(5.00)
+            ->setInvoice('testRefundInvoice')
+            ->setCurrency('EUR')
+            ->setOriginalTransactionKey($trPay->getPaymentKey());
+        $buckaroo = new Buckaroo();
+        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $buckaroo->execute($trRefund);
 
         $this->assertEquals('Refund', $service->getAction());
         $this->assertEquals('J. de Tèster', $service->getCustomerAccountName());

@@ -183,7 +183,7 @@ class Client implements ClientInterface
         $result = curl_exec($ch);
         curl_close($ch);
 
-        if (json_decode($result) === null) {
+        if (json_decode($result) === null) {var_dump($result);die;
             throw new NonJsonResultException();
         }
         $this->response = $result;
@@ -210,14 +210,18 @@ class Client implements ClientInterface
      */
     private function getAuthorizationHeader(string $method): string
     {
-        ksort($this->data);
-        $post = base64_encode(md5(json_encode($this->data), true));
+        $post = '';
+        if ($method === 'POST') {
+            ksort($this->data);
+            $post = base64_encode(md5(json_encode($this->data), true));
+        }
         $url = strtolower(urlencode($this->getUrl(false)));
         $nonce = sprintf('nonce_%d', mt_rand(0000000, 9999999));
         $time = time();
         $hmac = sprintf('%s%s%s%s%s%s', $this->websiteKey, $method, $url, $time, $nonce, $post);
         $s = hash_hmac('sha256', $hmac, $this->secretKey, true);
         $hmac = base64_encode($s);
+
         return sprintf('Authorization: hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
     }
 
