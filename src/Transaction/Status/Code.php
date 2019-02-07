@@ -2,7 +2,7 @@
 namespace Buckaroo\Transaction\Status;
 
 /**
- * This class holds information the status code of a transaction.
+ * This class holds information about the status code of a transaction.
  * Each transaction has a code and a subcode which are both
  * instances of this class.
  */
