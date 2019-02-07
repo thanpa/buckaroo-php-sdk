@@ -2,6 +2,7 @@
 namespace Buckaroo\Validators;
 
 use Buckaroo\Service\ServiceInterface;
+use Buckaroo\Service\ServiceAbstract;
 use Buckaroo\Transaction;
 use Buckaroo\Transaction\RequiredAction\RequestedInformation;
 use Buckaroo\Exceptions\InvalidUrlException;
@@ -10,7 +11,6 @@ use Buckaroo\Exceptions\UndefinedServiceException;
 use Buckaroo\Exceptions\UnsupportedRequestedInformationDataTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionMutationTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionContinueOnIncompleteException;
-use ReflectionClass;
 
 /**
  * Class for validation
@@ -56,28 +56,10 @@ class Validator
         if (empty($service->getName())) {
             throw new UndefinedServiceException();
         }
-        $declaredServices = $this->getDeclaredServices();
+        $declaredServices = ServiceAbstract::getDeclaredServices();
         if (!in_array($service->getName(), array_keys($declaredServices))) {
             throw new UnsupportedServiceException();
         }
-    }
-
-    /**
-     * Returns an array with all declared services
-     *
-     * @return array
-     */
-    public function getDeclaredServices(): array
-    {
-        $classes = get_declared_classes();
-        $declaredServices = [];
-        foreach ($classes as $class) {
-           $reflect = new ReflectionClass($class);
-           if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
-              $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
-           }
-        }
-        return $declaredServices;
     }
 
     /**

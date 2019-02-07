@@ -3,6 +3,7 @@ namespace Buckaroo;
 
 use Buckaroo\Exceptions\NegativeAmountException;
 use Buckaroo\Service\ServiceInterface;
+use Buckaroo\Service\ServiceAbstract;
 use Buckaroo\Transaction\ClientIp;
 use Buckaroo\Transaction\Status;
 use Buckaroo\Transaction\RequiredAction;
@@ -1232,7 +1233,7 @@ class Transaction
     {
         foreach ($services as $service) {
             if (!isset($this->services[$service->Name])) {
-                $serviceClassName = $this->validator->getDeclaredServices()[$service->Name];
+                $serviceClassName = ServiceAbstract::getDeclaredServices()[$service->Name];
                 $this->services[$service->Name] = new $serviceClassName($service->Action);
             }
             $this->getService($service->Name)->setParameters($service->Parameters);

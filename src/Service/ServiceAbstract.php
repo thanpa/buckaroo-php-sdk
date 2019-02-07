@@ -1,6 +1,8 @@
 <?php
 namespace Buckaroo\Service;
 
+use ReflectionClass;
+
 /**
  * Abstract class for the services
  */
@@ -24,6 +26,24 @@ abstract class ServiceAbstract
     public function __construct(?string $action)
     {
         $this->action = $action;
+    }
+
+    /**
+     * Returns an array with all declared services
+     *
+     * @return array
+     */
+    static function getDeclaredServices(): array
+    {
+        $classes = get_declared_classes();
+        $declaredServices = [];
+        foreach ($classes as $class) {
+           $reflect = new ReflectionClass($class);
+           if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
+              $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
+           }
+        }
+        return $declaredServices;
     }
 
     /**
