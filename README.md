@@ -87,7 +87,7 @@ Then the `$transaction` variable will hold a Transaction instance with all infor
 $transaction = $buckaroo->populateFromPush('{...<here goes the request body>...}');
 ```
 
-Once again you habe a transaction instance, ready to be used for anything you need.
+Once again you have a transaction instance, ready to be used for anything you need.
 
 ## Support ##
 Contact: [www.thanpa.com](https://www.thanpa.com) — hello@thanpa.com — +30 2521105247

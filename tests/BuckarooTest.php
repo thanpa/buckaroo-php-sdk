@@ -265,4 +265,21 @@ final class BuckarooTest extends TestCase
         $buckaroo = new Buckaroo();
         $buckaroo->setClient('InvalidClient');
     }
+
+    public function testActualExecutionToTestCHeckout(): void
+    {
+        $buckaroo = new Buckaroo();
+        $buckaroo->setApiKeys('GZoVsWBQV7pU2Kij8sadivU6VVNUAZ', 'MulbIDvgCm');
+
+        $service = new Ideal('Pay');
+        $service->setIssuer('ABNANL2A');
+
+        $transaction = (new Transaction())
+            ->addService($service);
+
+        $buckaroo->execute($transaction);
+
+        $this->assertEquals('GZoVsWBQV7pU2Kij8sadivU6VVNUAZ', $buckaroo->getClient()->getWebsiteKey());
+        $this->assertEquals('MulbIDvgCm', $buckaroo->getClient()->getSecretKey());
+    }
 }

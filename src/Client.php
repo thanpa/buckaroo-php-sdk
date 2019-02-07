@@ -19,7 +19,7 @@ class Client implements ClientInterface
     /**
      * @var string
      */
-    private $url = 'https://testcheckout.buckaroo.nl/json%s';
+    private $url = 'testcheckout.buckaroo.nl/json%s';
 
     /**
      * @var string
@@ -170,6 +170,7 @@ class Client implements ClientInterface
         }
         $result = curl_exec($ch);
         curl_close($ch);
+var_dump($result);die;
         $this->response = $result;
 
         return $this;
@@ -196,16 +197,14 @@ class Client implements ClientInterface
     {
         ksort($this->data);
         $post = base64_encode(md5(json_encode($this->data), true));
-
         $url = strtolower(urlencode($this->getUrl()));
         $nonce = sprintf('nonce_%d', mt_rand(0000000, 9999999));
         $time = time();
-
         $hmac = sprintf('%s%s%s%s%s%s', $this->websiteKey, $method, $url, $time, $nonce, $post);
         $s = hash_hmac('sha256', $hmac, $this->secretKey, true);
         $hmac = base64_encode($s);
 
-        return sprintf('"hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
+        return sprintf('Authorization: hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
     }
 
     /**
