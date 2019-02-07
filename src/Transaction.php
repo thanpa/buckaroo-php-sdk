@@ -8,6 +8,10 @@ use Buckaroo\Transaction\Status;
 use Buckaroo\Transaction\RequiredAction;
 use Buckaroo\Transaction\Status\Code;
 use Buckaroo\Validators\Validator;
+use Buckaroo\Transaction\TransactionReference;
+use Buckaroo\Transaction\RelatedTransaction;
+use Buckaroo\Transaction\Parameter;
+use Buckaroo\Transaction\RequestError;
 use DateTime;
 use stdClass;
 
@@ -18,6 +22,26 @@ use stdClass;
  */
 class Transaction
 {
+    const CONTINUE_ON_INCOMPLETE_NO = 0;
+    const CONTINUE_ON_INCOMPLETE_REDIRECT_TO_HTML = 1;
+    const VALID_CONTINUE_ON_INCOMPLETE_VALUES =
+        [
+            self::CONTINUE_ON_INCOMPLETE_NO,
+            self::CONTINUE_ON_INCOMPLETE_REDIRECT_TO_HTML
+        ];
+
+    const MUTATION_TYPE_NOT_SET = 0;
+    const MUTATION_TYPE_COLLECTING = 1;
+    const MUTATION_TYPE_PROCESSING = 2;
+    const MUTATION_TYPE_INFORMATIONAL = 3;
+    const VALID_MUTATION_TYPES =
+        [
+            self::MUTATION_TYPE_NOT_SET,
+            self::MUTATION_TYPE_COLLECTING,
+            self::MUTATION_TYPE_PROCESSING,
+            self::MUTATION_TYPE_INFORMATIONAL
+        ];
+
     /**
      * @var string
      */
@@ -74,9 +98,9 @@ class Transaction
     private $startRecurrent = false;
 
     /**
-     * @var string
+     * @var int
      */
-    private $continueOnIncomplete = 'No';
+    private $continueOnIncomplete = self::CONTINUE_ON_INCOMPLETE_NO;
 
     /**
      * @var array
@@ -109,12 +133,12 @@ class Transaction
     private $clientUserAgent = '';
 
     /**
-     * @var string
+     * @var TransactionReference
      */
-    private $originalTransactionReference = '';
+    private $originalTransactionReference;
 
     /**
-     * @var array
+     * @var stdClass
      */
     private $customParameters = [];
 
@@ -139,7 +163,7 @@ class Transaction
     private $requiredAction;
 
     /**
-     * @var string
+     * @var array
      */
     private $requestErrors = null;
 
@@ -169,7 +193,7 @@ class Transaction
     private $relatedTransactions = null;
 
     /**
-     * @var string
+     * @var ConsumerMessage
      */
     private $consumerMessage = null;
 
@@ -535,10 +559,10 @@ class Transaction
     /**
      * ContinueOnIncomplete setter.
      *
-     * @param string $continueOnIncomplete
+     * @param int $continueOnIncomplete
      * @return Transaction
      */
-    public function setContinueOnIncomplete(string $continueOnIncomplete): Transaction
+    public function setContinueOnIncomplete(int $continueOnIncomplete): Transaction
     {
         $this->continueOnIncomplete = $continueOnIncomplete;
 
@@ -550,7 +574,7 @@ class Transaction
      *
      * @return string
      */
-    public function getContinueOnIncomplete(): string
+    public function getContinueOnIncomplete(): int
     {
         return $this->continueOnIncomplete;
     }
@@ -710,10 +734,10 @@ class Transaction
     /**
      * OriginalTransactionReference setter.
      *
-     * @param string $originalTransactionReference
+     * @param TransactionReference $originalTransactionReference
      * @return Transaction
      */
-    public function setOriginalTransactionReference(string $originalTransactionReference): Transaction
+    public function setOriginalTransactionReference(TransactionReference $originalTransactionReference): Transaction
     {
         $this->originalTransactionReference = $originalTransactionReference;
 
@@ -725,7 +749,7 @@ class Transaction
      *
      * @return string
      */
-    public function getOriginalTransactionReference(): string
+    public function getOriginalTransactionReference(): TransactionReference
     {
         return $this->originalTransactionReference;
     }
@@ -733,12 +757,18 @@ class Transaction
     /**
      * CustomParameters setter.
      *
-     * @param array $customParameters
+     * @param stdClass $customParameters
      * @return Transaction
      */
-    public function setCustomParameters(array $customParameters): Transaction
+    public function setCustomParameters(stdClass $customParameters): Transaction
     {
-        $this->customParameters = $customParameters;
+        foreach ($customParameters->List as $customParameter) {
+            $customParameterObj = new Parameter();
+            $customParameterObj
+                ->setName($customParameter->Name)
+                ->setValue($customParameter->Value);
+            $this->customParameters[] = $customParameterObj;
+        }
 
         return $this;
     }
@@ -756,12 +786,18 @@ class Transaction
     /**
      * AdditionalParameters setter.
      *
-     * @param array $additionalParameters
+     * @param stdClass $additionalParameters
      * @return Transaction
      */
-    public function setAdditionalParameters(array $additionalParameters): Transaction
+    public function setAdditionalParameters(stdClass $additionalParameters): Transaction
     {
-        $this->additionalParameters = $additionalParameters;
+        foreach ($additionalParameters->AdditionalParameter as $additionalParameter) {
+            $additionalParameterObj = new Parameter();
+            $additionalParameterObj
+                ->setName($additionalParameter->Name)
+                ->setValue($additionalParameter->Value);
+            $this->additionalParameters[] = $additionalParameterObj;
+        }
 
         return $this;
     }
@@ -859,12 +895,31 @@ class Transaction
     /**
      * RequestErrors setter.
      *
-     * @param string $requestErrors
+     * @param stdClass $requestErrors
      * @return Transaction
      */
-    public function setRequestErrors(?string $requestErrors): Transaction
+    public function setRequestErrors(?stdClass $requestErrors): Transaction
     {
-        $this->requestErrors = $requestErrors;
+
+        if (empty($requestErrors)) {
+            $this->requestErrors = $requestErrors;
+            return $this;
+        }
+
+        $this->requestErrors = [];
+        foreach ($requestErrors as $errorType => $errorValues) {
+            foreach ($errorValues as $specificError) {
+                $requestError = new RequestError();
+                $requestError
+                    ->setGroup($errorType)
+                    ->setService(isset($specificError->Service) ? $specificError->Service : '')
+                    ->setAction(isset($specificError->Action) ? $specificError->Action : '')
+                    ->setName(isset($specificError->Name) ? $specificError->Name : '')
+                    ->setError(isset($specificError->Error) ? $specificError->Error : '')
+                    ->setErrorMessage(isset($specificError->ErrorMessage) ? $specificError->ErrorMessage : '');
+                $this->requestErrors[] = $requestError;
+            }
+        }
 
         return $this;
     }
@@ -872,9 +927,9 @@ class Transaction
     /**
      * RequestErrors getter.
      *
-     * @return string
+     * @return RequestErrors
      */
-    public function getRequestErrors(): ?string
+    public function getRequestErrors(): ?array
     {
         return $this->requestErrors;
     }
@@ -979,7 +1034,17 @@ class Transaction
      */
     public function setRelatedTransactions(?array $relatedTransactions): Transaction
     {
-        $this->relatedTransactions = $relatedTransactions;
+        if (empty($relatedTransactions)) {
+            return $this;
+        }
+
+        foreach ($relatedTransactions as $relatedTransaction) {
+            $relatedTransactionObj = new RelatedTransaction();
+            $relatedTransactionObj
+                ->setRelationType($relatedTransaction->RelationType)
+                ->setRelatedTransactionKey($relatedTransaction->RelatedTransactionKey);
+                $this->relatedTransactions[] = $relatedTransactionObj;
+        }
 
         return $this;
     }
@@ -997,10 +1062,10 @@ class Transaction
     /**
      * ConsumerMessage setter.
      *
-     * @param string $consumerMessage
+     * @param ConsumerMessage $consumerMessage
      * @return Transaction
      */
-    public function setConsumerMessage(?string $consumerMessage): Transaction
+    public function setConsumerMessage(?ConsumerMessage $consumerMessage): Transaction
     {
         $this->consumerMessage = $consumerMessage;
 
@@ -1010,9 +1075,9 @@ class Transaction
     /**
      * ConsumerMessage getter.
      *
-     * @return string
+     * @return ConsumerMessage
      */
-    public function getConsumerMessage(): ?string
+    public function getConsumerMessage(): ?ConsumerMessage
     {
         return $this->consumerMessage;
     }

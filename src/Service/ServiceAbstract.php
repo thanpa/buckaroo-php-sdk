@@ -12,6 +12,11 @@ abstract class ServiceAbstract
     private $action;
 
     /**
+     * @var int
+     */
+    private $version;
+
+    /**
      * Constructor
      *
      * @param ?string $action
@@ -29,6 +34,29 @@ abstract class ServiceAbstract
     public function getAction(): string
     {
         return $this->action;
+    }
+
+    /**
+     * Version setter.
+     *
+     * @param int $version
+     * @return ServiceInterface
+     */
+    public function setVersion(int $version): ServiceInterface
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Version getter
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
     }
 
     /**
