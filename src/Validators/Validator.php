@@ -2,9 +2,14 @@
 namespace Buckaroo\Validators;
 
 use Buckaroo\Service\ServiceInterface;
+use Buckaroo\Transaction;
+use Buckaroo\Transaction\RequiredAction\RequestedInformation;
 use Buckaroo\Exceptions\InvalidUrlException;
 use Buckaroo\Exceptions\UnsupportedServiceException;
 use Buckaroo\Exceptions\UndefinedServiceException;
+use Buckaroo\Exceptions\UnsupportedRequestedInformationDataTypeException;
+use Buckaroo\Exceptions\UnsupportedTransactionMutationTypeException;
+use Buckaroo\Exceptions\UnsupportedTransactionContinueOnIncompleteException;
 use ReflectionClass;
 
 /**
@@ -84,5 +89,44 @@ class Validator
     public function validateCurrency(string $currency): void
     {
         $this->currencyValidator->validate($currency);
+    }
+
+    /**
+     * Validates the requestedInformation data type.
+     *
+     * @param int $dataType
+     * @return void
+     */
+    public function validateRequestedInformationDataType(int $dataType): void
+    {
+        if (!in_array($dataType, RequestedInformation::VALID_DATA_TYPES)) {
+            throw new UnsupportedRequestedInformationDataTypeException();
+        }
+    }
+
+    /**
+     * Validates the trancaction mutationType data type.
+     *
+     * @param int $mutationType
+     * @return void
+     */
+    public function validateTrancactionMutationType(int $mutationType): void
+    {
+        if (!in_array($mutationType, Transaction::VALID_MUTATION_TYPES)) {
+            throw new UnsupportedTransactionMutationTypeException();
+        }
+    }
+
+    /**
+     * Validates the trancaction continueOnIncomplete.
+     *
+     * @param int $continueOnIncomplete
+     * @return void
+     */
+    public function validateTrancactionContinueOnIncomplete(int $continueOnIncomplete): void
+    {
+        if (!in_array($continueOnIncomplete, Transaction::VALID_CONTINUE_ON_INCOMPLETE_VALUES)) {
+            throw new UnsupportedTransactionContinueOnIncompleteException();
+        }
     }
 }

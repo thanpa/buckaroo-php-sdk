@@ -55,7 +55,78 @@ final class BuckarooTest extends TestCase
                 ],
                 "CustomParameters": null,
                 "AdditionalParameters": null,
-                "RequestErrors": null,
+                "RequestErrors": {
+                    "ChannelErrors": [
+                      {
+                        "Service": "sample string 1",
+                        "Action": "sample string 2",
+                        "Name": "sample string 3",
+                        "Error": "sample string 4",
+                        "ErrorMessage": "sample string 5"
+                      },
+                      {
+                        "Service": "sample string 1",
+                        "Action": "sample string 2",
+                        "Name": "sample string 3",
+                        "Error": "sample string 4",
+                        "ErrorMessage": "sample string 5"
+                      }
+                    ],
+                    "ServiceErrors": [
+                      {
+                        "Name": "sample string 1",
+                        "Error": "sample string 2",
+                        "ErrorMessage": "sample string 3"
+                      },
+                      {
+                        "Name": "sample string 1",
+                        "Error": "sample string 2",
+                        "ErrorMessage": "sample string 3"
+                      }
+                    ],
+                    "ActionErrors": [
+                      {
+                        "Service": "sample string 1",
+                        "Name": "sample string 2",
+                        "Error": "sample string 3",
+                        "ErrorMessage": "sample string 4"
+                      },
+                      {
+                        "Service": "sample string 1",
+                        "Name": "sample string 2",
+                        "Error": "sample string 3",
+                        "ErrorMessage": "sample string 4"
+                      }
+                    ],
+                    "ParameterErrors": [
+                      {
+                        "Service": "sample string 1",
+                        "Action": "sample string 2",
+                        "Name": "sample string 3",
+                        "Error": "sample string 4",
+                        "ErrorMessage": "sample string 5"
+                      },
+                      {
+                        "Service": "sample string 1",
+                        "Action": "sample string 2",
+                        "Name": "sample string 3",
+                        "Error": "sample string 4",
+                        "ErrorMessage": "sample string 5"
+                      }
+                    ],
+                    "CustomParameterErrors": [
+                      {
+                        "Name": "sample string 1",
+                        "Error": "sample string 2",
+                        "ErrorMessage": "sample string 3"
+                      },
+                      {
+                        "Name": "sample string 1",
+                        "Error": "sample string 2",
+                        "ErrorMessage": "sample string 3"
+                      }
+                    ]
+                },
                 "Invoice": "testinvoice 123",
                 "ServiceCode": "ideal",
                 "IsTest": true,
@@ -63,7 +134,16 @@ final class BuckarooTest extends TestCase
                 "AmountDebit": 10.0,
                 "TransactionType": "C021",
                 "MutationType": 1,
-                "RelatedTransactions": null,
+                "RelatedTransactions": [
+                    {
+                      "RelationType": "sample string 1",
+                      "RelatedTransactionKey": "sample string 2"
+                    },
+                    {
+                      "RelationType": "sample string 1",
+                      "RelatedTransactionKey": "sample string 2"
+                    }
+                ],
                 "ConsumerMessage": null,
                 "Order": null,
                 "IssuingCountry": null,
@@ -92,12 +172,12 @@ final class BuckarooTest extends TestCase
         $this->assertEquals($tr->getRequiredAction()->getName(), 'Redirect');
         $this->assertEquals($tr->getRequiredAction()->getTypeDeprecated(), 0);
 
-        $this->assertNull($tr->getRequestErrors());
+        $this->assertEquals(count($tr->getRequestErrors()), 10);
         $this->assertEquals($tr->getServiceCode(), 'ideal');
         $this->assertTrue($tr->getIsTest());
         $this->assertEquals($tr->getTransactionType(), 'C021');
         $this->assertEquals($tr->getMutationType(), 1);
-        $this->assertNull($tr->getRelatedTransactions());
+        $this->assertEquals(count($tr->getRelatedTransactions()), 2);
         $this->assertNull($tr->getConsumerMessage());
         $this->assertNull($tr->getOrder());
         $this->assertNull($tr->getIssuingCountry());

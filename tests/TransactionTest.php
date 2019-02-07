@@ -109,6 +109,24 @@ final class TransactionTest extends TestCase
     }
 
     /**
+     * @expectedException Buckaroo\Exceptions\UnsupportedTransactionMutationTypeException
+     */
+    public function testSetInvalidCurrencyThrowsUnsupportedTransactionMutationTypeException(): void
+    {
+        $tr = new Transaction();
+        $tr->setMutationType(100);
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UnsupportedTransactionContinueOnIncompleteException
+     */
+    public function testSetInvalidCurrencyThrowsUnsupportedTransactionContinueOnIncompleteException(): void
+    {
+        $tr = new Transaction();
+        $tr->setContinueOnIncomplete(100);
+    }
+
+    /**
      * @expectedException Buckaroo\Exceptions\InvalidCurrencyException
      */
     public function testSetInvalidCurrencyThrowsInvalidCurrencyException(): void
@@ -222,7 +240,7 @@ final class TransactionTest extends TestCase
     public function testSetInvalidTypeContinueOnIncompleteThrowsTypeError(): void
     {
         $tr = new Transaction();
-        $tr->setContinueOnIncomplete(new \stdClass());
+        $tr->setContinueOnIncomplete('stringValue');
     }
 
     /**
@@ -339,7 +357,7 @@ final class TransactionTest extends TestCase
     public function testSetInvalidTypeRequestErrorsThrowsTypeError(): void
     {
         $tr = new Transaction();
-        $tr->setRequestErrors(new \stdClass());
+        $tr->setRequestErrors([]);
     }
 
     /**
