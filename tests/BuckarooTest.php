@@ -11,156 +11,13 @@ final class BuckarooTest extends TestCase
 {
     public function testExecutes(): void
     {
-        $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['getDecodedResponse', 'call'])
-            ->getMock();
-
-        $mockedClient->method('call')->willReturn($mockedClient);
-        $mockedClient->method('getDecodedResponse')->willReturn(
-            json_decode('{
-                "Key": "4E8BD922192746C3918BF4077CXXXXXX",
-                "Status": {
-                    "Code": {
-                        "Code": 791,
-                        "Description": "Pending processing"
-                    },
-                    "SubCode": {
-                        "Code": "S002",
-                        "Description": "An additional action is required: RedirectToIdeal"
-                    },
-                    "DateTime": "2017-03-28T11:23:42"
-                },
-                "RequiredAction": {
-                    "RedirectURL": "https://testcheckout.buckaroo.nl/html/redirect.ashx?r=904A6432D283440ABD4418BF16XXXXXX",
-                    "RequestedInformation": null,
-                    "PayRemainderDetails": null,
-                    "Name": "Redirect",
-                    "TypeDeprecated": 0
-                },
-                "Services": [
-                    {
-                        "Name": "ideal",
-                        "Action": null,
-                        "Parameters": [
-                            {
-                                "Name": "consumerIssuer",
-                                "Value": "ABN AMRO"
-                            },
-                            {
-                                "Name": "transactionId",
-                                "Value": "0000000000000001"
-                            }
-                        ]
-                    }
-                ],
-                "CustomParameters": null,
-                "AdditionalParameters": null,
-                "RequestErrors": {
-                    "ChannelErrors": [
-                      {
-                        "Service": "sample string 1",
-                        "Action": "sample string 2",
-                        "Name": "sample string 3",
-                        "Error": "sample string 4",
-                        "ErrorMessage": "sample string 5"
-                      },
-                      {
-                        "Service": "sample string 1",
-                        "Action": "sample string 2",
-                        "Name": "sample string 3",
-                        "Error": "sample string 4",
-                        "ErrorMessage": "sample string 5"
-                      }
-                    ],
-                    "ServiceErrors": [
-                      {
-                        "Name": "sample string 1",
-                        "Error": "sample string 2",
-                        "ErrorMessage": "sample string 3"
-                      },
-                      {
-                        "Name": "sample string 1",
-                        "Error": "sample string 2",
-                        "ErrorMessage": "sample string 3"
-                      }
-                    ],
-                    "ActionErrors": [
-                      {
-                        "Service": "sample string 1",
-                        "Name": "sample string 2",
-                        "Error": "sample string 3",
-                        "ErrorMessage": "sample string 4"
-                      },
-                      {
-                        "Service": "sample string 1",
-                        "Name": "sample string 2",
-                        "Error": "sample string 3",
-                        "ErrorMessage": "sample string 4"
-                      }
-                    ],
-                    "ParameterErrors": [
-                      {
-                        "Service": "sample string 1",
-                        "Action": "sample string 2",
-                        "Name": "sample string 3",
-                        "Error": "sample string 4",
-                        "ErrorMessage": "sample string 5"
-                      },
-                      {
-                        "Service": "sample string 1",
-                        "Action": "sample string 2",
-                        "Name": "sample string 3",
-                        "Error": "sample string 4",
-                        "ErrorMessage": "sample string 5"
-                      }
-                    ],
-                    "CustomParameterErrors": [
-                      {
-                        "Name": "sample string 1",
-                        "Error": "sample string 2",
-                        "ErrorMessage": "sample string 3"
-                      },
-                      {
-                        "Name": "sample string 1",
-                        "Error": "sample string 2",
-                        "ErrorMessage": "sample string 3"
-                      }
-                    ]
-                },
-                "Invoice": "testinvoice 123",
-                "ServiceCode": "ideal",
-                "IsTest": true,
-                "Currency": "EUR",
-                "AmountDebit": 10.0,
-                "TransactionType": "C021",
-                "MutationType": 1,
-                "RelatedTransactions": [
-                    {
-                      "RelationType": "sample string 1",
-                      "RelatedTransactionKey": "sample string 2"
-                    },
-                    {
-                      "RelationType": "sample string 1",
-                      "RelatedTransactionKey": "sample string 2"
-                    }
-                ],
-                "ConsumerMessage": null,
-                "Order": null,
-                "IssuingCountry": null,
-                "StartRecurrent": false,
-                "Recurring": false,
-                "CustomerName": null,
-                "PayerHash": null,
-                "PaymentKey": "644545E2409D4223AC09E880ADXXXXXX"
-            }')
-        );
-
         $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
 
-        $tr = (new Transaction())->addService($service);
+        $tr = (new Transaction())->addService($service)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
 
         $buckaroo = new Buckaroo();
-        $buckaroo->setClient($mockedClient)->execute($tr);
+        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $buckaroo->execute($tr);
 
         $this->assertEquals($tr->getKey(), '4E8BD922192746C3918BF4077CXXXXXX');
         $this->assertEquals($tr->getStatus()->getCode()->getCode(), 791);
@@ -189,72 +46,10 @@ final class BuckarooTest extends TestCase
 
     public function testGetsTransaction(): void
     {
-        $mockedClient = $this->getMockBuilder(Client::class)
-            ->setMethods(['getDecodedResponse', 'call'])
-            ->getMock();
-
-        $mockedClient->method('call')->willReturn($mockedClient);
-        $mockedClient->method('getDecodedResponse')->willReturn(
-            json_decode('{
-                "Key": "4E8BD922192746C3918BF4077CXXXXXX",
-                "Status": {
-                    "Code": {
-                        "Code": 791,
-                        "Description": "Pending processing"
-                    },
-                    "SubCode": {
-                        "Code": "S002",
-                        "Description": "An additional action is required: RedirectToIdeal"
-                    },
-                    "DateTime": "2017-03-28T11:23:42"
-                },
-                "RequiredAction": {
-                    "RedirectURL": "https://testcheckout.buckaroo.nl/html/redirect.ashx?r=904A6432D283440ABD4418BF16XXXXXX",
-                    "RequestedInformation": null,
-                    "PayRemainderDetails": null,
-                    "Name": "Redirect",
-                    "TypeDeprecated": 0
-                },
-                "Services": [
-                    {
-                        "Name": "ideal",
-                        "Action": null,
-                        "Parameters": [
-                            {
-                                "Name": "consumerIssuer",
-                                "Value": "ABN AMRO"
-                            },
-                            {
-                                "Name": "transactionId",
-                                "Value": "0000000000000001"
-                            }
-                        ]
-                    }
-                ],
-                "CustomParameters": null,
-                "AdditionalParameters": null,
-                "RequestErrors": null,
-                "Invoice": "testinvoice 123",
-                "ServiceCode": "ideal",
-                "IsTest": true,
-                "Currency": "EUR",
-                "AmountDebit": 10.0,
-                "TransactionType": "C021",
-                "MutationType": 1,
-                "RelatedTransactions": null,
-                "ConsumerMessage": null,
-                "Order": null,
-                "IssuingCountry": null,
-                "StartRecurrent": false,
-                "Recurring": false,
-                "CustomerName": null,
-                "PayerHash": null,
-                "PaymentKey": "644545E2409D4223AC09E880ADXXXXXX"
-            }')
-        );
 
         $buckaroo = new Buckaroo();
-        $tr = $buckaroo->setClient($mockedClient)->getTransaction('4E8BD922192746C3918BF4077CXXXXXX');
+        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $tr = $buckaroo->getTransaction('4E8BD922192746C3918BF4077CXXXXXX');
         $this->assertEquals($tr->getStatus()->getCode()->getCode(), '791');
     }
 
@@ -325,6 +120,7 @@ final class BuckarooTest extends TestCase
         }';
 
         $buckaroo = new Buckaroo();
+        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
         $tr = $buckaroo->populateFromPush($body);
         $this->assertEquals($tr->getKey(), '4E8BD922192746C3918BF4077CXXXXXX');
     }
@@ -344,25 +140,5 @@ final class BuckarooTest extends TestCase
     {
         $buckaroo = new Buckaroo();
         $buckaroo->setClient('InvalidClient');
-    }
-
-    public function testActualExecutionToTestCHeckout(): void
-    {
-        $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys('MulbIDvgCm', 'GZoVsWBQV7pU2Kij8sadivU6VVNUAZ');
-
-        $service = new Ideal('Pay');
-        $service->setIssuer('ABNANL2A');
-
-        $transaction = (new Transaction())
-            ->setAmount(50)
-            ->setInvoice('testInvoice')
-            ->setCurrency('EUR')
-            ->addService($service);
-
-        $buckaroo->execute($transaction);
-
-        $this->assertEquals('GZoVsWBQV7pU2Kij8sadivU6VVNUAZ', $buckaroo->getClient()->getWebsiteKey());
-        $this->assertEquals('MulbIDvgCm', $buckaroo->getClient()->getSecretKey());
     }
 }

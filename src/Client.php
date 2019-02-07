@@ -1,6 +1,8 @@
 <?php
 namespace Buckaroo;
 
+use Buckaroo\Exceptions\NonJsonResultException;
+
 /**
  * This class holds information about the client calls
  */
@@ -15,6 +17,11 @@ class Client implements ClientInterface
      * @var string
      */
     private $secretKey = '';
+
+    /**
+     * @var string
+     */
+    private $protocol = 'https://';
 
     /**
      * @var string
@@ -159,8 +166,13 @@ class Client implements ClientInterface
     public function call(): ClientInterface
     {
         $method = count($this->data) === 0 ? 'GET' : 'POST';
-        $headers = [$this->getAuthorizationHeader($method, $this->data)];
+        $headers = [
+            $this->getAuthorizationHeader($method, $this->data),
+            'content-type:  application/json; charset=utf-8',
+            'channel: Web',
+        ];
         $body = json_encode($this->data);
+
         $ch = curl_init($this->getUrl());
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -171,6 +183,9 @@ class Client implements ClientInterface
         $result = curl_exec($ch);
         curl_close($ch);
 
+        if (json_decode($result) === null) {
+            throw new NonJsonResultException();
+        }
         $this->response = $result;
 
         return $this;
@@ -197,7 +212,7 @@ class Client implements ClientInterface
     {
         ksort($this->data);
         $post = base64_encode(md5(json_encode($this->data), true));
-        $url = strtolower(urlencode($this->getUrl()));
+        $url = strtolower(urlencode($this->getUrl(false)));
         $nonce = sprintf('nonce_%d', mt_rand(0000000, 9999999));
         $time = time();
         $hmac = sprintf('%s%s%s%s%s%s', $this->websiteKey, $method, $url, $time, $nonce, $post);
@@ -211,8 +226,9 @@ class Client implements ClientInterface
      *
      * @return string
      */
-    private function getUrl(): string
+    private function getUrl($protocol = true): string
     {
-        return sprintf($this->url, $this->path);
+        $pattern = $protocol === true ? sprintf('%s%s', $this->protocol, $this->url) : $this->url;
+        return sprintf($pattern, $this->path);
     }
 }

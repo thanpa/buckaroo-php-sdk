@@ -282,10 +282,10 @@ class Transaction
         $data = [
             'Currency' => $this->getCurrency(),
             'Invoice' => $this->getInvoice(),
-            'Service' => ['ServiceList' => []],
+            'Services' => ['ServiceList' => []],
         ];
         foreach ($this->getServices() as $service) {
-            $data['Service']['ServiceList'][] = $service->toArray();
+            $data['Services']['ServiceList'][] = $service->toArray();
             if ($service->getAction() === 'Pay') {
                 $data['AmountDebit'] = $this->getAmount();
             } elseif ($service->getAction() === 'Refund') {

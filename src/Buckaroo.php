@@ -2,6 +2,7 @@
 namespace Buckaroo;
 
 use Buckaroo\Transaction;
+use Buckaroo\Validators\Validator;
 
 /**
  * This class manages transactions. The information is for both request and
@@ -21,6 +22,7 @@ class Buckaroo
     public function __construct()
     {
         $this->client = new Client();
+        $this->validator = new Validator();
     }
 
     /**
@@ -100,6 +102,7 @@ class Buckaroo
      */
     public function execute(Transaction $transaction): Buckaroo
     {
+        $this->validator->validateTransaction($transaction);
         $this->client->setPath('/transaction')->setData($transaction->toArray());
         $transaction->populate($this->client->call()->getDecodedResponse());
 
