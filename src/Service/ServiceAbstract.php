@@ -33,7 +33,7 @@ abstract class ServiceAbstract
      *
      * @return array
      */
-    static function getDeclaredServices(): array
+    public static function getDeclaredServices(): array
     {
         $classes = get_declared_classes();
         $declaredServices = [];
