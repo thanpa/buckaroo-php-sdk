@@ -276,7 +276,7 @@ class Transaction
      *
      * @return array
      */
-    public function __toArray(): array
+    public function toArray(): array
     {
         $data = [
             'Currency' => $this->getCurrency(),

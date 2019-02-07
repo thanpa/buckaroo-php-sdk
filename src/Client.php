@@ -170,14 +170,14 @@ class Client implements ClientInterface
         }
         $result = curl_exec($ch);
         curl_close($ch);
-var_dump($result);die;
+
         $this->response = $result;
 
         return $this;
     }
 
     /**
-     * Returns the devoded response, based on json_decode
+     * Returns the decoded response, based on json_decode
      *
      * @return stdClass
      */
@@ -203,7 +203,6 @@ var_dump($result);die;
         $hmac = sprintf('%s%s%s%s%s%s', $this->websiteKey, $method, $url, $time, $nonce, $post);
         $s = hash_hmac('sha256', $hmac, $this->secretKey, true);
         $hmac = base64_encode($s);
-
         return sprintf('Authorization: hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
     }
 

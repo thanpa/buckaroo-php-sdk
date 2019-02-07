@@ -100,7 +100,7 @@ class Buckaroo
      */
     public function execute(Transaction $transaction): Buckaroo
     {
-        $this->client->setPath('/transaction')->setData((array) $transaction);
+        $this->client->setPath('/transaction')->setData($transaction->toArray());
         $transaction->populate($this->client->call()->getDecodedResponse());
 
         return $this;

@@ -349,12 +349,13 @@ final class BuckarooTest extends TestCase
     public function testActualExecutionToTestCHeckout(): void
     {
         $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys('GZoVsWBQV7pU2Kij8sadivU6VVNUAZ', 'MulbIDvgCm');
+        $buckaroo->setApiKeys('MulbIDvgCm', 'GZoVsWBQV7pU2Kij8sadivU6VVNUAZ');
 
         $service = new Ideal('Pay');
         $service->setIssuer('ABNANL2A');
 
         $transaction = (new Transaction())
+            ->setAmount(50)
             ->addService($service);
 
         $buckaroo->execute($transaction);
