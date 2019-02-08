@@ -2,8 +2,6 @@
 
 Currently only accepting [iDEAL](https://dev.buckaroo.nl/PaymentMethods/Description/ideal#top)
 
-[![Build Status](https://api.travis-ci.com/thanpa/buckaroo-php-sdk.svg?branch=phpcs-fixer)](https://api.travis-ci.com/thanpa/buckaroo-php-sdk)
-
 ## Requirements ##
 
 To use the Buckaroo API client, the following things are required:
