@@ -902,9 +902,8 @@ class Transaction
      * @param array $requestErrors
      * @return Transaction
      */
-    public function setRequestErrors(?array $requestErrors): Transaction
+    public function setRequestErrors(array $requestErrors): Transaction
     {
-        $this->requestErrors = [];
         foreach ($requestErrors as $errorType => $errorValues) {
             foreach ($errorValues as $specificError) {
                 $requestError = new RequestError();
@@ -925,9 +924,9 @@ class Transaction
     /**
      * RequestErrors getter.
      *
-     * @return RequestErrors
+     * @return array
      */
-    public function getRequestErrors(): ?array
+    public function getRequestErrors(): array
     {
         return $this->requestErrors;
     }
