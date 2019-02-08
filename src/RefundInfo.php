@@ -2,6 +2,7 @@
 namespace Buckaroo;
 
 use Buckaroo\RefundInfo\RefundInputField;
+use stdClass;
 
 /**
  * This class holds information about a refund, it represents
@@ -207,7 +208,7 @@ class RefundInfo
      *
      * @return self
      */
-    public function setNotRefundableExplanation(string $notRefundableExplanation): RefundInfo
+    public function setNotRefundableExplanation(?string $notRefundableExplanation): RefundInfo
     {
         $this->notRefundableExplanation = $notRefundableExplanation;
 
@@ -605,7 +606,7 @@ class RefundInfo
      *
      * @return self
      */
-    public function setAdditionalMessage(string $additionalMessage): RefundInfo
+    public function setAdditionalMessage(?string $additionalMessage): RefundInfo
     {
         $this->additionalMessage = $additionalMessage;
 

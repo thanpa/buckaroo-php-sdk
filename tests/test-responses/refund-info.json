@@ -1,0 +1,75 @@
+{
+  "TransactionKey": "DDD83FAF9505494EBB8987ACCE0AABE4",
+  "IsRefundable": true,
+  "NotRefundableExplanation": null,
+  "AllowPartialRefund": true,
+  "MaximumRefundAmount": 6,
+  "PendingRefundAmount": 0,
+  "RefundedAmount": 4,
+  "RefundCurrency": "EUR",
+  "ServiceCode": "ideal",
+  "RefundInputFields": [
+    {
+      "FieldDefinition": {
+        "ListItemDescriptions": null,
+        "isRequestParameter": true,
+        "Name": "customeraccountname",
+        "DataType": 0,
+        "MaxOccurs": 1,
+        "Required": true,
+        "Global": false,
+        "Group": null,
+        "Description": null,
+        "DisplayName": "Name",
+        "InputPattern": null,
+        "AutoCompleteType": null
+      },
+      "CurrentValue": "J. de Tèster",
+      "CurrentValueIncorrect": false,
+      "CurrentValueEditable": true
+    },
+    {
+      "FieldDefinition": {
+        "ListItemDescriptions": null,
+        "isRequestParameter": true,
+        "Name": "customerbic",
+        "DataType": 0,
+        "MaxOccurs": 1,
+        "Required": true,
+        "Global": true,
+        "Group": null,
+        "Description": null,
+        "DisplayName": "BIC Code",
+        "InputPattern": null,
+        "AutoCompleteType": null
+      },
+      "CurrentValue": "RABONL2U",
+      "CurrentValueIncorrect": false,
+      "CurrentValueEditable": false
+    },
+    {
+      "FieldDefinition": {
+        "ListItemDescriptions": null,
+        "isRequestParameter": true,
+        "Name": "customeriban",
+        "DataType": 0,
+        "MaxOccurs": 1,
+        "Required": true,
+        "Global": false,
+        "Group": null,
+        "Description": null,
+        "DisplayName": "IBAN number",
+        "InputPattern": null,
+        "AutoCompleteType": null
+      },
+      "CurrentValue": "NL44RABO0123456789",
+      "CurrentValueIncorrect": false,
+      "CurrentValueEditable": false
+    }
+  ],
+  "IsCreditmanagement": false,
+  "Invoice": "testinvoice 123",
+  "CanBeCancelled": false,
+  "UsesBalance": false,
+  "AdditionalMessage": null
+}

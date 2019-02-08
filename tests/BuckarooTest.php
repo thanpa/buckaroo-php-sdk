@@ -11,12 +11,20 @@ final class BuckarooTest extends TestCase
 {
     public function testExecutes(): void
     {
+        $mockedClient = $this->getMockBuilder(Client::class)->setMethods(['call', 'getDecodedResponse'])->getMock();
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode(
+                file_get_contents(sprintf('%s/test-responses/ideal-pay-response.json', __DIR__))
+            )
+        );
+
         $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
 
         $tr = (new Transaction())->addService($service)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
 
         $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $buckaroo->setClient($mockedClient);
         $buckaroo->execute($tr);
 
         $this->assertEquals($tr->getStatus()->getCode()->getCode(), 791);
@@ -43,111 +51,47 @@ final class BuckarooTest extends TestCase
 
     public function testGetsTransaction(): void
     {
-        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
+        $mockedClient = $this->getMockBuilder(Client::class)->setMethods(['call', 'getDecodedResponse'])->getMock();
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode(
+                file_get_contents(sprintf('%s/test-responses/status-response.json', __DIR__))
+            )
+        );
 
-        $tr = (new Transaction())->addService($service)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
+        $ideal = new Ideal('Pay'); // Bug
 
         $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $buckaroo->execute($tr);
-
-        $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $tr = $buckaroo->getTransaction($tr->getKey());
-        $this->assertEquals($tr->getStatus()->getCode()->getCode(), '791');
+        $buckaroo->setClient($mockedClient);
+        $tr = $buckaroo->getTransaction('DDD83FAF9505494EBB8987ACCE0AABE4');
+        $this->assertEquals($tr->getStatus()->getCode()->getCode(), '190');
+        $this->assertEquals($tr->getStatus()->getSubCode()->getCode(), 'S001');
     }
 
     public function testGetsRefundInfo(): void
     {
-        $paymentService = (new Ideal('Pay'))->setIssuer('ABNANL2A');
+        $mockedClient = $this->getMockBuilder(Client::class)->setMethods(['call', 'getDecodedResponse'])->getMock();
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode(
+                file_get_contents(sprintf('%s/test-responses/refund-info.json', __DIR__))
+            )
+        );
 
-        $paymentTransaction = (new Transaction())->addService($paymentService)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
+        $buckaroo = new Buckaroo();
+        $buckaroo->setClient($mockedClient);
+        $refundInfo = $buckaroo->getRefundInfo('DDD83FAF9505494EBB8987ACCE0AABE4');
 
-        $paymentBuckaroo = new Buckaroo();
-        $paymentBuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $paymentBuckaroo->execute($paymentTransaction);
-
-        $refundService = (new Ideal('Refund'))->setIssuer('ABNANL2A')->setCustomerAccountName('J. de Tèster')->setCustomerIban('NL44RABO0123456789')->setCustomerBic('RABONL2U');
-        $refundTransaction = (new Transaction())->setOriginalTransactionKey($paymentTransaction->getKey())->addService($refundService)->setAmount(5.00)->setInvoice('testRefundInvoice')->setCurrency('EUR');
-        $refundBuckaroo = new Buckaroo();
-        $refundBuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $refundBuckaroo->execute($refundTransaction);
-
-        $refundInfoBuckaroo = new Buckaroo();
-        $refundInfo = $refundInfoBuckaroo->getRefundInfo($paymentTransaction->getKey());
-
-        $this->assertEquals($refundInfo->getOriginalTransactionKey(), $paymentTransaction->getKey());
-        // more assertions
+        $this->assertEquals($refundInfo->getTransactionKey(), 'DDD83FAF9505494EBB8987ACCE0AABE4');
     }
 
     public function testPopulatesFromPush(): void
     {
-        $body = '{
-            "Transaction": {
-                "Key": "4E8BD922192746C3918BF4077CXXXXXX",
-                "Invoice": "testinvoice 123",
-                "ServiceCode": "ideal",
-                "Status": {
-                    "Code": {
-                        "Code": 190,
-                        "Description": "Success"
-                    },
-                    "SubCode": {
-                        "Code": "S001",
-                        "Description": "Transaction successfully processed"
-                    },
-                    "DateTime": "2017-03-28T11:24:14"
-                },
-                "IsTest": true,
-                "Order": null,
-                "Currency": "EUR",
-                "AmountDebit": 10.0,
-                "TransactionType": "C021",
-                "Services": [
-                    {
-                        "Name": "ideal",
-                        "Action": null,
-                        "Parameters": [
-                            {
-                                "Name": "consumerIssuer",
-                                "Value": "ABN AMRO"
-                            },
-                            {
-                                "Name": "transactionId",
-                                "Value": "0000000000000001"
-                            },
-                            {
-                                "Name": "consumerName",
-                                "Value": "J. de Tèster"
-                            },
-                            {
-                                "Name": "consumerIBAN",
-                                "Value": "NL44RABO0123456789"
-                            },
-                            {
-                                "Name": "consumerBIC",
-                                "Value": "RABONL2U"
-                            }
-                        ],
-                        "VersionAsProperty": 2
-                    }
-                ],
-                "CustomParameters": null,
-                "AdditionalParameters": null,
-                "MutationType": 1,
-                "RelatedTransactions": null,
-                "IsCancelable": false,
-                "IssuingCountry": null,
-                "StartRecurrent": false,
-                "Recurring": false,
-                "CustomerName": "J. de Tèster",
-                "PayerHash": "d2e447e9bd91d6e5b4507c2699f2dfa117c60e2e70a13854df4dad57aa54f26785f710b5c6022a9feaf8eace18125f5b1c6929a2ec9a4ff0e88182f9fe085ec3",
-                "PaymentKey": "644545E2409D4223AC09E880ADXXXXXX"
-            }
-        }';
+        $body = file_get_contents(sprintf('%s/test-responses/ideal-push.json', __DIR__));
+
+        $ideal = new Ideal('Pay'); // Bug
 
         $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
         $tr = $buckaroo->populateFromPush($body);
         $this->assertEquals($tr->getKey(), '4E8BD922192746C3918BF4077CXXXXXX');
     }

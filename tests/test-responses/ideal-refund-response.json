@@ -1,0 +1,59 @@
+{
+    "Key": "F996EE747ECD43CDA8851C5F83XXXXXX",
+    "Status": {
+        "Code": {
+            "Code": 190,
+            "Description": "Success"
+        },
+        "SubCode": {
+            "Code": "S001",
+            "Description": "Transaction successfully processed"
+        },
+        "DateTime": "2017-03-31T09:03:45"
+    },
+    "RequiredAction": null,
+    "Services": [
+        {
+            "Name": "ideal",
+            "Action": null,
+            "Parameters": [
+                {
+                    "Name": "customeraccountname",
+                    "Value": "J. de Tèster"
+                },
+                {
+                    "Name": "CustomerIBAN",
+                    "Value": "NL44RABO0123456789"
+                },
+                {
+                    "Name": "CustomerBIC",
+                    "Value": "RABONL2U"
+                }
+            ]
+        }
+    ],
+    "CustomParameters": null,
+    "AdditionalParameters": null,
+    "RequestErrors": null,
+    "Invoice": "testinvoice 123",
+    "ServiceCode": "ideal",
+    "IsTest": true,
+    "Currency": "EUR",
+    "AmountCredit": 1,
+    "TransactionType": "C121",
+    "MutationType": 1,
+    "RelatedTransactions": [
+        {
+            "RelationType": "refund",
+            "RelatedTransactionKey": "4E8BD922192746C3918BF4077CXXXXXX"
+        }
+    ],
+    "ConsumerMessage": null,
+    "Order": null,
+    "IssuingCountry": null,
+    "StartRecurrent": false,
+    "Recurring": false,
+    "CustomerName": "J. de Tèster",
+    "PayerHash": null,
+    "PaymentKey": "AE8B6E18A2684846AAAF06A63FXXXXXX"
+}

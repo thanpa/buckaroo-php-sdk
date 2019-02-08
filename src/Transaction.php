@@ -1236,6 +1236,7 @@ class Transaction
         if (empty($services)) {
             return $this;
         }
+
         foreach ($services as $service) {
             if (!isset($this->services[$service->Name])) {
                 $serviceClassName = ServiceAbstract::getDeclaredServices()[$service->Name];

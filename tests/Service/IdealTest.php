@@ -11,6 +11,14 @@ final class IdealTest extends TestCase
 {
     public function testPay(): void
     {
+        $mockedClient = $this->getMockBuilder(Client::class)->setMethods(['call', 'getDecodedResponse'])->getMock();
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode(
+                file_get_contents(sprintf('%s/../test-responses/ideal-pay-response.json', __DIR__))
+            )
+        );
+
         $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
         $tr = (new Transaction())
             ->addService($service)
@@ -18,7 +26,7 @@ final class IdealTest extends TestCase
             ->setInvoice('testInvoice')
             ->setCurrency('EUR');
         $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $buckaroo->setClient($mockedClient);
         $buckaroo->execute($tr);
 
         $this->assertEquals($service->getAction(), 'Pay');
@@ -28,35 +36,32 @@ final class IdealTest extends TestCase
 
     public function testRefund(): void
     {
-        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
-        $trPay = (new Transaction())
-            ->addService($service)
-            ->setAmount(10.00)
-            ->setInvoice('testInvoice')
-            ->setCurrency('EUR');
-        $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $buckaroo->execute($trPay);
+        $mockedClient = $this->getMockBuilder(Client::class)->setMethods(['call', 'getDecodedResponse'])->getMock();
+        $mockedClient->method('call')->willReturn($mockedClient);
+        $mockedClient->method('getDecodedResponse')->willReturn(
+            json_decode(
+                file_get_contents(sprintf('%s/../test-responses/ideal-refund-response.json', __DIR__))
+            )
+        );
 
         $service = (new Ideal('Refund'))
             ->setIssuer('ABNANL2A')
             ->setCustomerAccountName('J. de Tèster')
             ->setCustomerIban('NL44RABO0123456789')
             ->setCustomerBic('RABONL2U');
-        $trRefund = (new Transaction())
-            ->setOriginalTransactionKey($trPay->getKey())
+        $tr = (new Transaction())
+            ->setOriginalTransactionKey('F996EE747ECD43CDA8851C5F83XXXXXX')
             ->addService($service)
             ->setAmount(5.00)
             ->setInvoice('testRefundInvoice')
             ->setCurrency('EUR');
-        $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $buckaroo->execute($trRefund);
 
-        $this->assertEquals('Refund', $service->getAction());
-        $this->assertEquals('J. de Tèster', $service->getCustomerAccountName());
-        $this->assertEquals('NL44RABO0123456789', $service->getCustomerIban());
-        $this->assertEquals('RABONL2U', $service->getCustomerBic());
+        $buckaroo = new Buckaroo();
+        $buckaroo->setClient($mockedClient);
+        $buckaroo->execute($tr);
+
+        $this->assertEquals($tr->getStatus()->getCode()->getCode(), '190');
+        $this->assertEquals($tr->getStatus()->getSubCode()->getCode(), 'S001');
     }
 
     public function testGetNameReturnsClassName(): void
