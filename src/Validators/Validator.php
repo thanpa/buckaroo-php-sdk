@@ -9,9 +9,10 @@ use Buckaroo\Exceptions\InvalidTransactionCurrencyException;
 use Buckaroo\Exceptions\InvalidTransactionInvoiceException;
 use Buckaroo\Exceptions\InvalidTransactionServicesException;
 use Buckaroo\Exceptions\InvalidUrlException;
-use Buckaroo\Exceptions\UnsupportedRequestedInformationDataTypeException;
+use Buckaroo\Exceptions\UnsupportedDataTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionMutationTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionContinueOnIncompleteException;
+use Buckaroo\Exceptions\UnsupportedListTypeException;
 
 /**
  * Class for validation
@@ -74,15 +75,15 @@ class Validator
     }
 
     /**
-     * Validates the requestedInformation data type.
+     * Validates the data type.
      *
      * @param int $dataType
      * @return void
      */
-    public function validateRequestedInformationDataType(int $dataType): void
+    public function validateDataType(int $dataType): void
     {
         if (!in_array($dataType, RequestedInformation::VALID_DATA_TYPES)) {
-            throw new UnsupportedRequestedInformationDataTypeException();
+            throw new UnsupportedDataTypeException();
         }
     }
 
@@ -142,6 +143,19 @@ class Validator
         }
         if (empty($transaction->getServices())) {
             throw new InvalidTransactionServicesException();
+        }
+    }
+
+    /**
+     * Validates the list type.
+     *
+     * @param string $list
+     * @return void
+     */
+    public function validateListTypes(string $list): void
+    {
+        if (!in_array($list, self::VALID_LIST_TYPES)) {
+            throw new UnsupportedListTypeException();
         }
     }
 }

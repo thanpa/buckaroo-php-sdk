@@ -102,7 +102,7 @@ class RequestedInformation
      */
     public function setDataType(int $dataType): RequestedInformation
     {
-        $this->validator->validateRequestedInformationDataType($dataType);
+        $this->validator->validateDataType($dataType);
         $this->dataType = $dataType;
 
         return $this;

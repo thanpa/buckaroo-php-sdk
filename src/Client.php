@@ -185,8 +185,6 @@ class Client implements ClientInterface
         curl_close($ch);
 
         if (json_decode($result) === null) {
-            var_dump($result);
-            die;
             throw new NonJsonResultException();
         }
         $this->response = $result;

@@ -164,7 +164,7 @@ class Transaction
     /**
      * @var array
      */
-    private $requestErrors = null;
+    private $requestErrors = [];
 
     /**
      * @var string
@@ -189,7 +189,7 @@ class Transaction
     /**
      * @var array
      */
-    private $relatedTransactions = null;
+    private $relatedTransactions = [];
 
     /**
      * @var ConsumerMessage
@@ -254,12 +254,12 @@ class Transaction
             ->setKey($response->Key)
             ->setStatus($response->Status)
             ->setRequiredAction(isset($response->RequiredAction) ? $response->RequiredAction : null)
-            ->setRequestErrors(isset($response->RequestErrors) ? $response->RequestErrors : null)
+            ->setRequestErrors(!empty($response->RequestErrors) ? $response->RequestErrors : [])
             ->setServiceCode($response->ServiceCode)
             ->setIsTest($response->IsTest)
             ->setTransactionType($response->TransactionType)
             ->setMutationType($response->MutationType)
-            ->setRelatedTransactions($response->RelatedTransactions)
+            ->setRelatedTransactions(!empty($response->RelatedTransactions) ? $response->RelatedTransactions : [])
             ->setConsumerMessage(isset($response->ConsumerMessage) ? $response->ConsumerMessage : null)
             ->setOrder($response->Order)
             ->setIssuingCountry($response->IssuingCountry)
@@ -899,18 +899,11 @@ class Transaction
     /**
      * RequestErrors setter.
      *
-     * @param stdClass $requestErrors
+     * @param array $requestErrors
      * @return Transaction
      */
-    public function setRequestErrors(?stdClass $requestErrors): Transaction
+    public function setRequestErrors(array $requestErrors): Transaction
     {
-
-        if (empty($requestErrors)) {
-            $this->requestErrors = $requestErrors;
-            return $this;
-        }
-
-        $this->requestErrors = [];
         foreach ($requestErrors as $errorType => $errorValues) {
             foreach ($errorValues as $specificError) {
                 $requestError = new RequestError();
@@ -931,9 +924,9 @@ class Transaction
     /**
      * RequestErrors getter.
      *
-     * @return RequestErrors
+     * @return array
      */
-    public function getRequestErrors(): ?array
+    public function getRequestErrors(): array
     {
         return $this->requestErrors;
     }
@@ -1037,12 +1030,8 @@ class Transaction
      * @param array $relatedTransactions
      * @return Transaction
      */
-    public function setRelatedTransactions(?array $relatedTransactions): Transaction
+    public function setRelatedTransactions(array $relatedTransactions): Transaction
     {
-        if (empty($relatedTransactions)) {
-            return $this;
-        }
-
         foreach ($relatedTransactions as $relatedTransaction) {
             $relatedTransactionObj = new RelatedTransaction();
             $relatedTransactionObj
@@ -1059,7 +1048,7 @@ class Transaction
      *
      * @return array
      */
-    public function getRelatedTransactions(): ?array
+    public function getRelatedTransactions(): array
     {
         return $this->relatedTransactions;
     }
@@ -1236,6 +1225,7 @@ class Transaction
         if (empty($services)) {
             return $this;
         }
+
         foreach ($services as $service) {
             if (!isset($this->services[$service->Name])) {
                 $serviceClassName = ServiceAbstract::getDeclaredServices()[$service->Name];

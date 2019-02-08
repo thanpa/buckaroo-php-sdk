@@ -80,6 +80,21 @@ class Buckaroo
     }
 
     /**
+     * Retrieves refund information.
+     *
+     * @param string $key
+     * @return RefundInfo
+     */
+    public function getRefundInfo(string $key): RefundInfo
+    {
+        $this->client->setPath(sprintf('/transaction/refundinfo/%s', $key));
+        $refundInfo = new RefundInfo();
+        $refundInfo->populate($this->client->call()->getDecodedResponse());
+
+        return $refundInfo;
+    }
+
+    /**
      * Populates a transaction from a buckaroo push.
      *
      * @param string $pushBody The body from the push from Buckaroo
