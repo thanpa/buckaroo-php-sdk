@@ -27,7 +27,7 @@ class Client implements ClientInterface
     /**
      * @var string
      */
-    private $url = 'testcheckout.buckaroo.nl/json%s';
+    private $url = 'checkout.buckaroo.nl/json%s';
 
     /**
      * @var string
