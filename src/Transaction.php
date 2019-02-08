@@ -189,7 +189,7 @@ class Transaction
     /**
      * @var array
      */
-    private $relatedTransactions = null;
+    private $relatedTransactions = [];
 
     /**
      * @var ConsumerMessage
@@ -259,7 +259,7 @@ class Transaction
             ->setIsTest($response->IsTest)
             ->setTransactionType($response->TransactionType)
             ->setMutationType($response->MutationType)
-            ->setRelatedTransactions($response->RelatedTransactions)
+            ->setRelatedTransactions(!empty($response->RelatedTransactions) ? $response->RelatedTransactions : [])
             ->setConsumerMessage(isset($response->ConsumerMessage) ? $response->ConsumerMessage : null)
             ->setOrder($response->Order)
             ->setIssuingCountry($response->IssuingCountry)
@@ -902,9 +902,8 @@ class Transaction
      * @param array $requestErrors
      * @return Transaction
      */
-    public function setRequestErrors(?array $requestErrors): Transaction
+    public function setRequestErrors(array $requestErrors): Transaction
     {
-        $this->requestErrors = [];
         foreach ($requestErrors as $errorType => $errorValues) {
             foreach ($errorValues as $specificError) {
                 $requestError = new RequestError();
@@ -925,9 +924,9 @@ class Transaction
     /**
      * RequestErrors getter.
      *
-     * @return RequestErrors
+     * @return array
      */
-    public function getRequestErrors(): ?array
+    public function getRequestErrors(): array
     {
         return $this->requestErrors;
     }
@@ -1031,12 +1030,8 @@ class Transaction
      * @param array $relatedTransactions
      * @return Transaction
      */
-    public function setRelatedTransactions(?array $relatedTransactions): Transaction
+    public function setRelatedTransactions(array $relatedTransactions): Transaction
     {
-        if (empty($relatedTransactions)) {
-            return $this;
-        }
-
         foreach ($relatedTransactions as $relatedTransaction) {
             $relatedTransactionObj = new RelatedTransaction();
             $relatedTransactionObj
@@ -1053,7 +1048,7 @@ class Transaction
      *
      * @return array
      */
-    public function getRelatedTransactions(): ?array
+    public function getRelatedTransactions(): array
     {
         return $this->relatedTransactions;
     }
