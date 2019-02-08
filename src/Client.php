@@ -183,7 +183,7 @@ class Client implements ClientInterface
         $result = curl_exec($ch);
         curl_close($ch);
 
-        if (json_decode($result) === null) {var_dump($result);die;
+        if (json_decode($result) === null) {
             throw new NonJsonResultException();
         }
         $this->response = $result;
