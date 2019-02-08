@@ -2,6 +2,7 @@
 namespace Buckaroo\Service;
 
 use ReflectionClass;
+use Buckaroo\Validators\Validator;
 
 /**
  * Abstract class for the services
@@ -19,6 +20,11 @@ abstract class ServiceAbstract
     private $version;
 
     /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
      * Constructor
      *
      * @param ?string $action
@@ -26,6 +32,7 @@ abstract class ServiceAbstract
     public function __construct(?string $action)
     {
         $this->action = $action;
+        $this->validator = new Validator();
     }
 
     /**
@@ -93,5 +100,15 @@ abstract class ServiceAbstract
             }
         }
         return $this;
+    }
+
+    /**
+     * Validator getter
+     *
+     * @return Validator
+     */
+    public function getValidator(): Validator
+    {
+        return $this->validator;
     }
 }

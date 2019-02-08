@@ -589,7 +589,7 @@ class Transaction
      */
     public function addService(ServiceInterface $service): Transaction
     {
-        $this->validator->validateService($service);
+        $this->validator->validateService($service, $this);
 
         $this->services[$service->getName()] = $service;
 

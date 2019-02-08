@@ -173,6 +173,33 @@ final class IdealTest extends TestCase
     }
 
     /**
+     * @expectedException Buckaroo\Exceptions\UnsupportedIssuerException
+     */
+    public function testSetInvalidIssuerThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setIssuer('unsupportedIssuer');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UndefinedOriginalKeyForServiceRefundActionException
+     */
+    public function testSetPayServiceWithUndefinedOriginalTransactionKeThrowsUndefinedOriginalKeyForServiceRefundActionException(): void
+    {
+        $service = new Ideal('Refund');
+        $tr = (new Transaction())->addService($service);
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UndefinedIssuerForServicePayActionException
+     */
+    public function testSetPayServiceWithUndefinedIssuerThrowsUndefinedIssuerForServicePayActionException(): void
+    {
+        $service = new Ideal('Pay');
+        $tr = (new Transaction())->addService($service);
+    }
+
+    /**
      * @expectedException \TypeError
      */
     public function testSetInvalidTypeIssuerThrowsTypeError(): void
