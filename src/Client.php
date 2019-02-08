@@ -1,6 +1,8 @@
 <?php
 namespace Buckaroo;
 
+use Buckaroo\Exceptions\NonJsonResultException;
+
 /**
  * This class holds information about the client calls
  */
@@ -19,7 +21,12 @@ class Client implements ClientInterface
     /**
      * @var string
      */
-    private $url = 'https://testcheckout.buckaroo.nl/json%s';
+    private $protocol = 'https://';
+
+    /**
+     * @var string
+     */
+    private $url = 'testcheckout.buckaroo.nl/json%s';
 
     /**
      * @var string
@@ -159,8 +166,13 @@ class Client implements ClientInterface
     public function call(): ClientInterface
     {
         $method = count($this->data) === 0 ? 'GET' : 'POST';
-        $headers = [$this->getAuthorizationHeader($method, $this->data)];
+        $headers = [
+            $this->getAuthorizationHeader($method, $this->data),
+            'content-type:  application/json; charset=utf-8',
+            'channel: Web',
+        ];
         $body = json_encode($this->data);
+
         $ch = curl_init($this->getUrl());
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -170,13 +182,17 @@ class Client implements ClientInterface
         }
         $result = curl_exec($ch);
         curl_close($ch);
+
+        if (json_decode($result) === null) {var_dump($result);die;
+            throw new NonJsonResultException();
+        }
         $this->response = $result;
 
         return $this;
     }
 
     /**
-     * Returns the devoded response, based on json_decode
+     * Returns the decoded response, based on json_decode
      *
      * @return stdClass
      */
@@ -194,18 +210,19 @@ class Client implements ClientInterface
      */
     private function getAuthorizationHeader(string $method): string
     {
-        ksort($this->data);
-        $post = base64_encode(md5(json_encode($this->data), true));
-
-        $url = strtolower(urlencode($this->getUrl()));
+        $post = '';
+        if ($method === 'POST') {
+            ksort($this->data);
+            $post = base64_encode(md5(json_encode($this->data), true));
+        }
+        $url = strtolower(urlencode($this->getUrl(false)));
         $nonce = sprintf('nonce_%d', mt_rand(0000000, 9999999));
         $time = time();
-
         $hmac = sprintf('%s%s%s%s%s%s', $this->websiteKey, $method, $url, $time, $nonce, $post);
         $s = hash_hmac('sha256', $hmac, $this->secretKey, true);
         $hmac = base64_encode($s);
 
-        return sprintf('"hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
+        return sprintf('Authorization: hmac %s:%s:%s:%s', $this->websiteKey, $hmac, $nonce, $time);
     }
 
     /**
@@ -213,8 +230,9 @@ class Client implements ClientInterface
      *
      * @return string
      */
-    private function getUrl(): string
+    private function getUrl($protocol = true): string
     {
-        return sprintf($this->url, $this->path);
+        $pattern = $protocol === true ? sprintf('%s%s', $this->protocol, $this->url) : $this->url;
+        return sprintf($pattern, $this->path);
     }
 }

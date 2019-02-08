@@ -224,8 +224,10 @@ class Ideal extends ServiceAbstract implements ServiceInterface
             'Name' => $this->getName(),
             'Action' => $this->getAction(),
             'Parameters' => [
-                'Name' => 'issuer',
-                'Value' => $this->getIssuer(),
+                [
+                    'Name' => 'issuer',
+                    'Value' => $this->getIssuer(),
+                ],
             ],
         ];
     }
