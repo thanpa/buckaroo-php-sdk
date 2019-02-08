@@ -7,6 +7,7 @@ namespace Buckaroo\Transaction\RequiredAction;
  */
 class PayRemainderDetails
 {
+
     /**
      * @var float
      */

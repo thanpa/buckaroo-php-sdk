@@ -19,8 +19,7 @@ class RequestedInformation
     const DATA_TYPE_CARD_NUMBER = 6;
     const DATA_TYPE_EXPIRY_DATE = 7;
     const DATA_TYPE_CARD_START_DATE = 8;
-    const VALID_DATA_TYPES =
-        [
+    const VALID_DATA_TYPES = [
             self::DATA_TYPE_STRING,
             self::DATA_TYPE_INTEGER,
             self::DATA_TYPE_DECIMAL,
@@ -187,5 +186,4 @@ class RequestedInformation
     {
         return $this->description;
     }
-
 }

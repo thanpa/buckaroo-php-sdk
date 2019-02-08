@@ -11,6 +11,7 @@ use Buckaroo\Validators\Validator;
  */
 class Buckaroo
 {
+
     /**
      * @var Client
      */
@@ -28,8 +29,8 @@ class Buckaroo
     /**
      * Set necessary keys for Buckaroo API
      *
-     * @param string $website
-     * @param string $secret
+     * @param string $website The website
+     * @param string $secret The secret
      * @return Buckaroo
      */
     public function setApiKeys(string $website, string $secret): Buckaroo
@@ -43,7 +44,7 @@ class Buckaroo
     /**
      * Client setter.
      *
-     * @param ClientInterface $client
+     * @param ClientInterface $client The client
      * @return Buckaroo
      */
     public function setClient(ClientInterface $client): Buckaroo
@@ -66,7 +67,7 @@ class Buckaroo
     /**
      * Retrieves a transaction.
      *
-     * @param string $key
+     * @param string $key The key
      * @return Transaction
      */
     public function getTransaction(string $key): Transaction
@@ -96,7 +97,7 @@ class Buckaroo
     /**
      * Populates a transaction from a buckaroo push.
      *
-     * @param string $pushBody
+     * @param string $pushBody The body from the push from Buckaroo
      * @return Transaction
      */
     public function populateFromPush(string $pushBody): Transaction
@@ -112,7 +113,7 @@ class Buckaroo
     /**
      * Execute transaction
      *
-     * @param Transaction $transaction
+     * @param Transaction $transaction The transaction to execute
      * @return Buckaroo
      */
     public function execute(Transaction $transaction): Buckaroo
@@ -124,4 +125,3 @@ class Buckaroo
         return $this;
     }
 }
-

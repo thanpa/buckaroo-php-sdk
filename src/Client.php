@@ -8,6 +8,7 @@ use Buckaroo\Exceptions\NonJsonResultException;
  */
 class Client implements ClientInterface
 {
+
     /**
      * @var string
      */

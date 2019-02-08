@@ -6,6 +6,7 @@ namespace Buckaroo\Transaction;
  */
 class RequestError
 {
+
     /**
      * @var string
      */

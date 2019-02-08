@@ -6,6 +6,7 @@ namespace Buckaroo\Transaction;
  */
 class ConsumerMessage
 {
+
     /**
      * @var bool
      */
@@ -145,5 +146,4 @@ class ConsumerMessage
     {
         return $this->htmlText;
     }
-
 }
