@@ -44,7 +44,7 @@ final class IdealTest extends TestCase
             ->setCustomerIban('NL44RABO0123456789')
             ->setCustomerBic('RABONL2U');
         $trRefund = (new Transaction())
-            ->setOriginalTransactionKey($trPay->getPaymentKey())
+            ->setOriginalTransactionKey($trPay->getKey())
             ->addService($service)
             ->setAmount(5.00)
             ->setInvoice('testRefundInvoice')

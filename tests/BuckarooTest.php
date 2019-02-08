@@ -67,8 +67,14 @@ final class BuckarooTest extends TestCase
         $paymentBuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
         $paymentBuckaroo->execute($paymentTransaction);
 
+        $refundService = (new Ideal('Refund'))->setIssuer('ABNANL2A')->setCustomerAccountName('J. de Tèster')->setCustomerIban('NL44RABO0123456789')->setCustomerBic('RABONL2U');
+        $refundTransaction = (new Transaction())->setOriginalTransactionKey($paymentTransaction->getKey())->addService($refundService)->setAmount(5.00)->setInvoice('testRefundInvoice')->setCurrency('EUR');
         $refundBuckaroo = new Buckaroo();
-        $refundInfo = $refundBuckaroo->getRefundInfo($paymentTransaction->getKey());
+        $refundBuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $refundBuckaroo->execute($refundTransaction);
+
+        $refundInfoBuckaroo = new Buckaroo();
+        $refundInfo = $refundInfoBuckaroo->getRefundInfo($paymentTransaction->getKey());
 
         $this->assertEquals($refundInfo->getOriginalTransactionKey(), $paymentTransaction->getKey());
         // more assertions
