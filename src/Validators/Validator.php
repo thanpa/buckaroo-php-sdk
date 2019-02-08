@@ -4,6 +4,10 @@ namespace Buckaroo\Validators;
 use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction;
 use Buckaroo\Transaction\RequiredAction\RequestedInformation;
+use Buckaroo\Exceptions\InvalidTransactionAmountException;
+use Buckaroo\Exceptions\InvalidTransactionCurrencyException;
+use Buckaroo\Exceptions\InvalidTransactionInvoiceException;
+use Buckaroo\Exceptions\InvalidTransactionServicesException;
 use Buckaroo\Exceptions\InvalidUrlException;
 use Buckaroo\Exceptions\UnsupportedRequestedInformationDataTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionMutationTypeException;
@@ -116,5 +120,27 @@ class Validator
     public function validateIssuer(string $issuer): void
     {
         $this->serviceValidator->validateIssuer($issuer);
+    }
+
+    /**
+     * Validates the trancaction.
+     *
+     * @param Transaction $transaction
+     * @return void
+     */
+    public function validateTransaction(Transaction $transaction): void
+    {
+        if (empty($transaction->getAmount())) {
+            throw new InvalidTransactionAmountException();
+        }
+        if (empty($transaction->getCurrency())) {
+            throw new InvalidTransactionCurrencyException();
+        }
+        if (empty($transaction->getInvoice())) {
+            throw new InvalidTransactionInvoiceException();
+        }
+        if (empty($transaction->getServices())) {
+            throw new InvalidTransactionServicesException();
+        }
     }
 }
