@@ -8,6 +8,7 @@ use Buckaroo\Exceptions\NonJsonResultException;
  */
 class Client implements ClientInterface
 {
+
     /**
      * @var string
      */
@@ -183,7 +184,9 @@ class Client implements ClientInterface
         $result = curl_exec($ch);
         curl_close($ch);
 
-        if (json_decode($result) === null) {var_dump($result);die;
+        if (json_decode($result) === null) {
+            var_dump($result);
+            die;
             throw new NonJsonResultException();
         }
         $this->response = $result;

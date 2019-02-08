@@ -13,6 +13,7 @@ use Buckaroo\Transaction\RequiredAction\PayRemainderDetails;
  */
 class RequiredAction
 {
+
     /**
      * @var string
      */

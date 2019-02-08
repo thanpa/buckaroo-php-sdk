@@ -3,7 +3,8 @@
     "description": "A PHP SDK for Buckaroo payment provider",
     "type": "library",
     "require": {
-        "phpunit/phpunit": "^6.0"
+        "phpunit/phpunit": "^6.0",
+        "thanpa/thanpa-coding-standard": "^1.0"
     },
     "autoload": {
         "psr-4": {"Buckaroo\\": "src/"}

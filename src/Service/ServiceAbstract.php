@@ -9,6 +9,7 @@ use Buckaroo\Validators\Validator;
  */
 abstract class ServiceAbstract
 {
+
     /**
      * @var string
      */
@@ -45,10 +46,10 @@ abstract class ServiceAbstract
         $classes = get_declared_classes();
         $declaredServices = [];
         foreach ($classes as $class) {
-           $reflect = new ReflectionClass($class);
-           if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
-              $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
-           }
+            $reflect = new ReflectionClass($class);
+            if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
+                $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
+            }
         }
         return $declaredServices;
     }

@@ -19,8 +19,7 @@ class Ideal extends ServiceAbstract implements ServiceInterface
     const BANK_BUNQ = 'BUNQNL2A';
     const BANK_MONEYOU = 'MOYONL21';
     const BANK_HANDELSBANKEN = 'HANDNL2A';
-    const VALID_ISSUING_BANKS =
-        [
+    const VALID_ISSUING_BANKS = [
             self::BANK_ABN_AMRO,
             self::BANK_ASN,
             self::BANK_ING,
