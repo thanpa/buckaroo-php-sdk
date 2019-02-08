@@ -1,4 +1,4 @@
-## Buckaroo API client for PHP [![Build Status](https://api.travis-ci.com/thanpa/buckaroo-php-sdk.svg?branch=phpcs-fixer)](https://api.travis-ci.com/thanpa/buckaroo-php-sdk) ##
+## Buckaroo API client for PHP [![Build Status](https://travis-ci.com/thanpa/buckaroo-php-sdk.svg?branch=master)](https://travis-ci.com/thanpa/buckaroo-php-sdk) ##
 
 Currently only accepting [iDEAL](https://dev.buckaroo.nl/PaymentMethods/Description/ideal#top)
 
