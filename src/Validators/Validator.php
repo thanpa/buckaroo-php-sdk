@@ -2,7 +2,6 @@
 namespace Buckaroo\Validators;
 
 use Buckaroo\Service\ServiceInterface;
-use Buckaroo\Service\ServiceAbstract;
 use Buckaroo\Transaction;
 use Buckaroo\Transaction\RequiredAction\RequestedInformation;
 use Buckaroo\Exceptions\InvalidTransactionAmountException;
@@ -10,8 +9,6 @@ use Buckaroo\Exceptions\InvalidTransactionCurrencyException;
 use Buckaroo\Exceptions\InvalidTransactionInvoiceException;
 use Buckaroo\Exceptions\InvalidTransactionServicesException;
 use Buckaroo\Exceptions\InvalidUrlException;
-use Buckaroo\Exceptions\UnsupportedServiceException;
-use Buckaroo\Exceptions\UndefinedServiceException;
 use Buckaroo\Exceptions\UnsupportedRequestedInformationDataTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionMutationTypeException;
 use Buckaroo\Exceptions\UnsupportedTransactionContinueOnIncompleteException;
@@ -34,6 +31,7 @@ class Validator
     public function __construct()
     {
         $this->currencyValidator = new CurrencyValidator();
+        $this->serviceValidator = new ServiceValidator();
     }
 
     /**
@@ -53,17 +51,14 @@ class Validator
      * Validates the service.
      *
      * @param ServiceInterface $service
+     * @param Transaction $trancaction
      * @return void
      */
-    public function validateService(ServiceInterface $service): void
+    public function validateService(ServiceInterface $service, Transaction $trancaction): void
     {
-        if (empty($service->getName())) {
-            throw new UndefinedServiceException();
-        }
-        $declaredServices = ServiceAbstract::getDeclaredServices();
-        if (!in_array($service->getName(), array_keys($declaredServices))) {
-            throw new UnsupportedServiceException();
-        }
+        $this->serviceValidator->validateName($service);
+        $this->serviceValidator->validateIdealPay($service);
+        $this->serviceValidator->validateIdealRefund($service, $trancaction);
     }
 
     /**
@@ -114,6 +109,17 @@ class Validator
         if (!in_array($continueOnIncomplete, Transaction::VALID_CONTINUE_ON_INCOMPLETE_VALUES)) {
             throw new UnsupportedTransactionContinueOnIncompleteException();
         }
+    }
+
+    /**
+     * Validates the service issuer.
+     *
+     * @param string $issuer
+     * @return void
+     */
+    public function validateIssuer(string $issuer): void
+    {
+        $this->serviceValidator->validateIssuer($issuer);
     }
 
     /**

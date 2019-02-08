@@ -7,6 +7,34 @@ namespace Buckaroo\Service;
  */
 class Ideal extends ServiceAbstract implements ServiceInterface
 {
+    const BANK_ABN_AMRO = 'ABNANL2A';
+    const BANK_ASN = 'ASNBNL21';
+    const BANK_ING = 'INGBNL2A';
+    const BANK_RABOBANK = 'RABONL2U';
+    const BANK_SNS = 'SNSBNL2A';
+    const BANK_SNS_REGIO = 'RBRBNL21';
+    const BANK_TRIODOS = 'TRIONL2U';
+    const BANK_VAN = 'FVLBNL22';
+    const BANK_KNAB = 'KNABNL2H';
+    const BANK_BUNQ = 'BUNQNL2A';
+    const BANK_MONEYOU = 'MOYONL21';
+    const BANK_HANDELSBANKEN = 'HANDNL2A';
+    const VALID_ISSUING_BANKS =
+        [
+            self::BANK_ABN_AMRO,
+            self::BANK_ASN,
+            self::BANK_ING,
+            self::BANK_RABOBANK,
+            self::BANK_SNS,
+            self::BANK_SNS_REGIO,
+            self::BANK_TRIODOS,
+            self::BANK_VAN,
+            self::BANK_KNAB,
+            self::BANK_BUNQ,
+            self::BANK_MONEYOU,
+            self::BANK_HANDELSBANKEN
+        ];
+
     /**
      * @var string
      */
@@ -55,6 +83,7 @@ class Ideal extends ServiceAbstract implements ServiceInterface
      */
     public function setIssuer(string $issuer): Ideal
     {
+        $this->getValidator()->validateIssuer($issuer);
         $this->issuer = $issuer;
 
         return $this;

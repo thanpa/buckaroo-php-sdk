@@ -44,11 +44,11 @@ final class IdealTest extends TestCase
             ->setCustomerIban('NL44RABO0123456789')
             ->setCustomerBic('RABONL2U');
         $trRefund = (new Transaction())
+            ->setOriginalTransactionKey($trPay->getPaymentKey())
             ->addService($service)
             ->setAmount(5.00)
             ->setInvoice('testRefundInvoice')
-            ->setCurrency('EUR')
-            ->setOriginalTransactionKey($trPay->getPaymentKey());
+            ->setCurrency('EUR');
         $buckaroo = new Buckaroo();
         $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
         $buckaroo->execute($trRefund);
@@ -64,6 +64,33 @@ final class IdealTest extends TestCase
         $service = new Ideal('Pay');
 
         $this->assertEquals('ideal', $service->getName());
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UnsupportedIssuerException
+     */
+    public function testSetInvalidIssuerThrowsTypeError(): void
+    {
+        $service = new Ideal('Pay');
+        $service->setIssuer('unsupportedIssuer');
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UndefinedOriginalKeyForServiceRefundActionException
+     */
+    public function testSetPayServiceWithUndefinedOriginalTransactionKeThrowsUndefinedOriginalKeyForServiceRefundActionException(): void
+    {
+        $service = new Ideal('Refund');
+        $tr = (new Transaction())->addService($service);
+    }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UndefinedIssuerForServicePayActionException
+     */
+    public function testSetPayServiceWithUndefinedIssuerThrowsUndefinedIssuerForServicePayActionException(): void
+    {
+        $service = new Ideal('Pay');
+        $tr = (new Transaction())->addService($service);
     }
 
     /**
