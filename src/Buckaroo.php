@@ -11,6 +11,7 @@ use Buckaroo\Validators\Validator;
  */
 class Buckaroo
 {
+
     /**
      * @var Client
      */
@@ -109,4 +110,3 @@ class Buckaroo
         return $this;
     }
 }
-

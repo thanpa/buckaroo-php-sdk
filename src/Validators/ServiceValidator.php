@@ -51,7 +51,7 @@ class ServiceValidator
      * Validates the ideal refund.
      *
      * @param ServiceInterface $service
-     * @param Transaction $trancaction
+     * @param Transaction      $trancaction
      * @return void
      */
     public function validateIdealRefund(ServiceInterface $service, Transaction $trancaction): void

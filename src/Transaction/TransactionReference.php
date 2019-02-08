@@ -7,6 +7,7 @@ namespace Buckaroo\Transaction;
  */
 class TransactionReference
 {
+
     /**
      * @var string
      */

@@ -25,8 +25,7 @@ class Transaction
 {
     const CONTINUE_ON_INCOMPLETE_NO = 0;
     const CONTINUE_ON_INCOMPLETE_REDIRECT_TO_HTML = 1;
-    const VALID_CONTINUE_ON_INCOMPLETE_VALUES =
-        [
+    const VALID_CONTINUE_ON_INCOMPLETE_VALUES = [
             self::CONTINUE_ON_INCOMPLETE_NO,
             self::CONTINUE_ON_INCOMPLETE_REDIRECT_TO_HTML
         ];
@@ -35,8 +34,7 @@ class Transaction
     const MUTATION_TYPE_COLLECTING = 1;
     const MUTATION_TYPE_PROCESSING = 2;
     const MUTATION_TYPE_INFORMATIONAL = 3;
-    const VALID_MUTATION_TYPES =
-        [
+    const VALID_MUTATION_TYPES = [
             self::MUTATION_TYPE_NOT_SET,
             self::MUTATION_TYPE_COLLECTING,
             self::MUTATION_TYPE_PROCESSING,
@@ -1249,4 +1247,3 @@ class Transaction
         return $this;
     }
 }
-

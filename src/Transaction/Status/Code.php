@@ -8,6 +8,7 @@ namespace Buckaroo\Transaction\Status;
  */
 class Code
 {
+
     /**
      * @var string
      */

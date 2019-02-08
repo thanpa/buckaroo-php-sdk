@@ -18,6 +18,7 @@ use Buckaroo\Exceptions\UnsupportedTransactionContinueOnIncompleteException;
  */
 class Validator
 {
+
     /**
      * @var Validator
      */
@@ -51,7 +52,7 @@ class Validator
      * Validates the service.
      *
      * @param ServiceInterface $service
-     * @param Transaction $trancaction
+     * @param Transaction      $trancaction
      * @return void
      */
     public function validateService(ServiceInterface $service, Transaction $trancaction): void
