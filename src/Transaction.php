@@ -164,7 +164,7 @@ class Transaction
     /**
      * @var array
      */
-    private $requestErrors = null;
+    private $requestErrors = [];
 
     /**
      * @var string
@@ -254,7 +254,7 @@ class Transaction
             ->setKey($response->Key)
             ->setStatus($response->Status)
             ->setRequiredAction(isset($response->RequiredAction) ? $response->RequiredAction : null)
-            ->setRequestErrors(isset($response->RequestErrors) ? $response->RequestErrors : null)
+            ->setRequestErrors(!empty($response->RequestErrors) ? $response->RequestErrors : [])
             ->setServiceCode($response->ServiceCode)
             ->setIsTest($response->IsTest)
             ->setTransactionType($response->TransactionType)
@@ -899,10 +899,10 @@ class Transaction
     /**
      * RequestErrors setter.
      *
-     * @param stdClass $requestErrors
+     * @param array $requestErrors
      * @return Transaction
      */
-    public function setRequestErrors(?stdClass $requestErrors): Transaction
+    public function setRequestErrors(array $requestErrors): Transaction
     {
 
         if (empty($requestErrors)) {
