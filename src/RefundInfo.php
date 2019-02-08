@@ -129,7 +129,7 @@ class RefundInfo
             ->setRefundedAmount($response->RefundedAmount)
             ->setRefundCurrency($response->RefundCurrency)
             ->setServiceCode($response->ServiceCode)
-            //->setRefundInputFields($response->RefundInputFields)
+            ->setRefundInputFields($response->RefundInputFields)
             ->setIsCreditmanagement($response->IsCreditmanagement)
             ->setInvoice($response->Invoice)
             ->setInvoiceAmount(isset($response->InvoiceAmount) ? $response->InvoiceAmount : 0)
@@ -376,7 +376,16 @@ class RefundInfo
      */
     public function setRefundInputFields(array $refundInputFields): RefundInfo
     {
-        $this->refundInputFields = $refundInputFields;
+        foreach ($refundInputFields as $refundInputField) {
+            $refundInputFieldObj = (new RefundInputField())
+                ->setFieldDefinition(isset($refundInputField->RefundInputFields) ? $refundInputField->RefundInputFields : null)
+                ->setCurrentValue($refundInputField->CurrentValue)
+                ->setCurrentValueIncorrect($refundInputField->CurrentValueIncorrect)
+                ->setCurrentValueEditable($refundInputField->CurrentValueEditable);
+
+
+            $this->refundInputFields[] = $refundInputFieldObj;
+        }
 
         return $this;
     }

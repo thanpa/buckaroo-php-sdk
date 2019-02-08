@@ -7,7 +7,7 @@ use Buckaroo\Transaction\RequiredAction\RequestedInformation;
 final class RequestedInformationTest extends TestCase
 {
     /**
-     * @expectedException Buckaroo\Exceptions\UnsupportedRequestedInformationDataTypeException
+     * @expectedException Buckaroo\Exceptions\UnsupportedDataTypeException
      */
     public function testSetInvalidDataTypeThrowsTypeUnsupportedRequestedInformationDataTypeException(): void
     {

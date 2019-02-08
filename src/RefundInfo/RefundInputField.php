@@ -2,6 +2,7 @@
 namespace Buckaroo\RefundInfo;
 
 use Buckaroo\RefundInfo\ParameterDescription\ParameterDescription;
+use stdClass;
 
 /**
  * This class holds information about one refund input field
@@ -32,12 +33,29 @@ class RefundInputField
     /**
      * FieldDefinition setter.
      *
-     * @param ParameterDescription $fieldDefinition
+     * @param stdClass $fieldDefinition
      * @return RefundInputField
      */
-    public function setFieldDefinition(ParameterDescription $fieldDefinition): RefundInputField
+    public function setFieldDefinition(?stdClass $fieldDefinition): RefundInputField
     {
-        $this->fieldDefinition = $fieldDefinition;
+        if ($fieldDefinition === null) {
+            return $this;
+        }
+        $this->fieldDefinition = (new ParameterDescription())
+            ->setName($parameterDescription->Name)
+            ->setDataType($parameterDescription->DataType)
+            ->setList($parameterDescription->Name)
+            ->setMaxLength($parameterDescription->MaxLength)
+            ->setΜaxOccurs($parameterDescription->MaxOccurs)
+            ->setRequired($parameterDescription->Required)
+            ->setGlobal($parameterDescription->Global)
+            ->setGroup($parameterDescription->Group)
+            ->setDescription($parameterDescription->Description)
+            ->setExplanationHtml($parameterDescription->ExplanationHTML)
+            ->setDisplayName($parameterDescription->DisplayName)
+            ->setInputPattern($parameterDescription->InputPattern)
+            ->setAutoCompleteType($parameterDescription->AutoCompleteType)
+            ->setListItemDescriptions($parameterDescription->ListItemDescriptions);
 
         return $this;
     }

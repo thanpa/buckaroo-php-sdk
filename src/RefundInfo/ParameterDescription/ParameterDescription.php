@@ -246,6 +246,29 @@ class ParameterDescription
     }
 
     /**
+     * Group setter.
+     *
+     * @param string $group
+     * @return ParameterDescription
+     */
+    public function setGroup(string $group): ParameterDescription
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Group getter.
+     *
+     * @return string
+     */
+    public function getGroup(): string
+    {
+        return $this->group;
+    }
+
+    /**
      * Global setter.
      *
      * @param bool $global
@@ -274,7 +297,7 @@ class ParameterDescription
      * @param string $description
      * @return ParameterDescription
      */
-    public function setGlobal(string $description): ParameterDescription
+    public function setDescription(string $description): ParameterDescription
     {
         $this->description = $description;
 
@@ -286,7 +309,7 @@ class ParameterDescription
      *
      * @return string
      */
-    public function getGlobal(): string
+    public function getDescription(): string
     {
         return $this->description;
     }

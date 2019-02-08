@@ -152,7 +152,7 @@ class Validator
      * @param string $list
      * @return void
      */
-    public function validateIssuer(string $list): void
+    public function validateListTypes(string $list): void
     {
         if (!in_array($list, self::VALID_LIST_TYPES)) {
             throw new UnsupportedListTypeException();
