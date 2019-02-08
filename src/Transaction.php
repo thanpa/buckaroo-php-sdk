@@ -250,8 +250,8 @@ class Transaction
     public function populate(stdClass $response): Transaction
     {
         $this
-            ->setServiceData(isset($response->Services) ? $response->Services : null)
-            ->setKey(isset($response->Key) ? $response->Key : null)
+            ->setServiceData($response->Services)
+            ->setKey($response->Key)
             ->setStatus($response->Status)
             ->setRequiredAction(isset($response->RequiredAction) ? $response->RequiredAction : null)
             ->setRequestErrors(isset($response->RequestErrors) ? $response->RequestErrors : null)
@@ -280,7 +280,6 @@ class Transaction
         $data = [
             'Currency' => $this->getCurrency(),
             'Invoice' => $this->getInvoice(),
-            'OriginalTransactionKey' => $this->getOriginalTransactionKey(),
             'Services' => ['ServiceList' => []],
         ];
         foreach ($this->getServices() as $service) {

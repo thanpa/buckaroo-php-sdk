@@ -249,15 +249,14 @@ class Ideal extends ServiceAbstract implements ServiceInterface
     public function toArray(): array
     {
         return [
-                'Name' => $this->getName(),
-                'Action' => $this->getAction(),
-                'Parameters' => [
-                    [
-                        'Name' => 'issuer',
-                        'Value' => $this->getIssuer(),
-                    ],
+            'Name' => $this->getName(),
+            'Action' => $this->getAction(),
+            'Parameters' => [
+                [
+                    'Name' => 'issuer',
+                    'Value' => $this->getIssuer(),
                 ],
-            ];
-
+            ],
+        ];
     }
 }

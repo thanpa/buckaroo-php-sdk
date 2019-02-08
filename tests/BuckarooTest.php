@@ -47,41 +47,31 @@ final class BuckarooTest extends TestCase
 
         $tr = (new Transaction())->addService($service)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
 
-        $paymentBuckaroo = new Buckaroo();
-        $paymentBuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $paymentBuckaroo->execute($tr);
+        $buckaroo = new Buckaroo();
+        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $buckaroo->execute($tr);
 
-        $transactionGetterbuckaroo = new Buckaroo();
-        $transactionGetterbuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $tr = $transactionGetterbuckaroo->getTransaction($tr->getKey());
+        $buckaroo = new Buckaroo();
+        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
+        $tr = $buckaroo->getTransaction($tr->getKey());
         $this->assertEquals($tr->getStatus()->getCode()->getCode(), '791');
     }
 
-    public function testGetsRefundTransaction(): void
+    public function testGetsRefundInfo(): void
     {
         $paymentService = (new Ideal('Pay'))->setIssuer('ABNANL2A');
 
-        $trPay = (new Transaction())->addService($paymentService)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
+        $paymentTransaction = (new Transaction())->addService($paymentService)->setAmount(10.00)->setCurrency('EUR')->setInvoice('#0001');
 
         $paymentBuckaroo = new Buckaroo();
         $paymentBuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $paymentBuckaroo->execute($trPay);
+        $paymentBuckaroo->execute($paymentTransaction);
 
-        $refundService = (new Ideal('Refund'));
-        $trRefund = (new Transaction())
-            ->setOriginalTransactionKey($trPay->getPaymentKey())
-            ->addService($refundService)
-            ->setAmount(5.00)
-            ->setInvoice('testRefundInvoice')
-            ->setCurrency('EUR');
-        $buckaroo = new Buckaroo();
-        $buckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $buckaroo->execute($trRefund);
+        $refundBuckaroo = new Buckaroo();
+        $refundInfo = $refundBuckaroo->getRefundInfo($paymentTransaction->getKey());
 
-        $transactionGetterbuckaroo = new Buckaroo();
-        $transactionGetterbuckaroo->setApiKeys(getenv('WEBSITE_KEY'), getenv('SECRET_KEY'));
-        $trRefundInfo = $transactionGetterbuckaroo->getRefundTransaction('4E8BD922192746C3918BF4077CXXXXXX');
-        $this->assertEquals($trRefundInfo->getStatus()->getCode()->getCode(), '791');
+        $this->assertEquals($refundInfo->getOriginalTransactionKey(), $paymentTransaction->getKey());
+        // more assertions
     }
 
     public function testPopulatesFromPush(): void
