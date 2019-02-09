@@ -8,28 +8,6 @@ use Buckaroo\Service\Ideal;
 final class TransactionTest extends TestCase
 {
     /**
-     * @expectedException Buckaroo\Exceptions\UnsupportedServiceException
-     */
-    public function testAddUnsupportedServiceThrowsUnsupportedServiceException(): void
-    {
-        $mockedService = $this->getMockBuilder(Ideal::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getName'])
-            ->getMock();
-
-        $mockedService->method('getName')->willReturn('notIdeal');
-
-        $service = (new Ideal('Pay'))->setIssuer('ABNANL2A');
-
-        $tr = (new Transaction())->addService($mockedService);
-
-        $buckaroo->setClient($mockedClient)->execute();
-
-        $tr = new Transaction();
-        $tr->addService($mockedService);
-    }
-
-    /**
      * @expectedException Buckaroo\Exceptions\UndefinedServiceException
      */
     public function testAddUndefinedServiceThrowsUndefinedServiceException(): void

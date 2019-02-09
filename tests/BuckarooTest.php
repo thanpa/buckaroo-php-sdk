@@ -108,4 +108,14 @@ final class BuckarooTest extends TestCase
         $buckaroo = new Buckaroo();
         $buckaroo->setClient('InvalidClient');
     }
+
+    /**
+     * @expectedException Buckaroo\Exceptions\UnsupportedServiceException
+     */
+    public function testAddUnsupportedServiceThrowsUnsupportedServiceException(): void
+    {
+        $buckaroo = new Buckaroo();
+        $body = file_get_contents(sprintf('%s/test-responses/ideal-push-false-service-name.json', __DIR__));
+        $tr = $buckaroo->populateFromPush($body);
+    }
 }

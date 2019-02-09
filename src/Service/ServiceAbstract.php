@@ -3,6 +3,7 @@ namespace Buckaroo\Service;
 
 use ReflectionClass;
 use Buckaroo\Validators\Validator;
+use Buckaroo\Exceptions\UnsupportedServiceException;
 
 /**
  * Abstract class for the services
@@ -26,23 +27,35 @@ abstract class ServiceAbstract
     private $validator;
 
     /**
-     * Constructor
-     *
-     * @param ?string $action
-     */
-    public function __construct(?string $action)
-    {
-        $this->action = $action;
-        $this->validator = new Validator();
-    }
-
-    /**
+     * Returns the class name of the provided service name.
      * Makes sure that the class is first declared by requiring the appropriate file
      * then it returns the class name from within the declared classes with Reflection.
      *
-     * @return array
+     * @param string $name
+     * @return string
      */
     public static function getServiceClassName(string $name): string
+    {
+        self::requireService($name);
+        $classes = get_declared_classes();
+        foreach ($classes as $class) {
+            $reflect = new ReflectionClass($class);
+            $reflectedServiceName = strtolower(basename(str_replace('\\', '/', $class)));
+            if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface') && $reflectedServiceName === $name) {
+                return $class;
+            }
+        }
+        throw new UnsupportedServiceException();
+    }
+
+    /**
+     * Makes sure that the named service is required in order to be readable by the
+     * reflection call for finding the class names of the declared services
+     *
+     * @param string $name
+     * @return array
+     */
+    private static function requireService(string $name): void
     {
         $d = dir(__DIR__);
         while ($entry = $d->read()) {
@@ -61,27 +74,17 @@ abstract class ServiceAbstract
             }
         }
         $d->close();
-
-        return self::getDeclaredServices()[$name];
     }
 
     /**
-     * Returns an array with all available services.
+     * Constructor
      *
-     * @return array
+     * @param ?string $action
      */
-    public static function getDeclaredServices(): array
+    public function __construct(?string $action)
     {
-        $classes = get_declared_classes();
-        $declaredServices = [];
-        foreach ($classes as $class) {
-            $reflect = new ReflectionClass($class);
-            if ($reflect->implementsInterface('Buckaroo\Service\ServiceInterface')) {
-                $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
-            }
-        }
-
-        return $declaredServices;
+        $this->action = $action;
+        $this->validator = new Validator();
     }
 
     /**

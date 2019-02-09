@@ -6,7 +6,6 @@ use Buckaroo\Service\ServiceAbstract;
 use Buckaroo\Transaction;
 use Buckaroo\Service\Ideal;
 use Buckaroo\Exceptions\InvalidCurrencyException;
-use Buckaroo\Exceptions\UnsupportedServiceException;
 use Buckaroo\Exceptions\UndefinedServiceException;
 use Buckaroo\Exceptions\UndefinedIssuerForServicePayActionException;
 use Buckaroo\Exceptions\UndefinedOriginalKeyForServiceRefundActionException;
@@ -27,10 +26,6 @@ class ServiceValidator
     {
         if (empty($service->getName())) {
             throw new UndefinedServiceException();
-        }
-        $declaredServices = ServiceAbstract::getDeclaredServices();
-        if (!in_array($service->getName(), array_keys($declaredServices))) {
-            throw new UnsupportedServiceException();
         }
     }
 
