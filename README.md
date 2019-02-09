@@ -81,6 +81,16 @@ $transaction = $buckaroo->getTransaction('THIS-IS-THE-TRANSACTION-KEY');
 
 Then the `$transaction` variable will hold a Transaction instance with all information populated in it.
 
+## Retrieving refund information ##
+
+This is also done easily with only a call to `getRefundInfo` method of the Buckaroo master class.
+
+```php
+$refundInfo = $buckaroo->getRefundInfo('THIS-IS-THE-REFUND-TRANSACTION-KEY');
+```
+
+Then the `$refundInfo` variable will hold a RefundInfo instance with all information populated in it.
+
 ## Making a transaction instance out of a Buckaroo push ##
 
 ```php
