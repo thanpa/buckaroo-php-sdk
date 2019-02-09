@@ -59,8 +59,6 @@ final class BuckarooTest extends TestCase
             )
         );
 
-        $ideal = new Ideal('Pay'); // Bug
-
         $buckaroo = new Buckaroo();
         $buckaroo->setClient($mockedClient);
         $tr = $buckaroo->getTransaction('DDD83FAF9505494EBB8987ACCE0AABE4');
@@ -88,8 +86,6 @@ final class BuckarooTest extends TestCase
     public function testPopulatesFromPush(): void
     {
         $body = file_get_contents(sprintf('%s/test-responses/ideal-push.json', __DIR__));
-
-        $ideal = new Ideal('Pay'); // Bug
 
         $buckaroo = new Buckaroo();
         $tr = $buckaroo->populateFromPush($body);

@@ -1228,7 +1228,7 @@ class Transaction
 
         foreach ($services as $service) {
             if (!isset($this->services[$service->Name])) {
-                $serviceClassName = ServiceAbstract::getDeclaredServices()[$service->Name];
+                $serviceClassName = ServiceAbstract::getServiceClassName($service->Name);
                 $this->services[$service->Name] = new $serviceClassName($service->Action);
             }
             $this->getService($service->Name)->setParameters($service->Parameters);

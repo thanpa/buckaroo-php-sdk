@@ -37,7 +37,36 @@ abstract class ServiceAbstract
     }
 
     /**
-     * Returns an array with all declared services
+     * Makes sure that the class is first declared by requiring the appropriate file
+     * then it returns the class name from within the declared classes with Reflection.
+     *
+     * @return array
+     */
+    public static function getServiceClassName(string $name): string
+    {
+        $d = dir(__DIR__);
+        while ($entry = $d->read()) {
+            $ext = substr($entry, -4);
+            if (!$ext === '.php') {
+                continue;
+            }
+            $lowercaseFilename = strtolower(substr($entry, 0, -4));
+            if ($lowercaseFilename !== $name) {
+                continue;
+            }
+            $filepath = sprintf('%s/%s', __DIR__, $entry);
+            if (file_exists($filepath)) {
+                require_once $filepath;
+                break;
+            }
+        }
+        $d->close();
+
+        return self::getDeclaredServices()[$name];
+    }
+
+    /**
+     * Returns an array with all available services.
      *
      * @return array
      */
@@ -51,6 +80,7 @@ abstract class ServiceAbstract
                 $declaredServices[strtolower(basename(str_replace('\\', '/', $class)))] = $class;
             }
         }
+
         return $declaredServices;
     }
 
