@@ -9,7 +9,7 @@ final class RequestedInformationTest extends TestCase
     /**
      * @expectedException Buckaroo\Exceptions\UnsupportedDataTypeException
      */
-    public function testSetInvalidDataTypeThrowsTypeUnsupportedRequestedInformationDataTypeException(): void
+    public function testSetInvalidDataTypeThrowsUnsupportedDataTypeException(): void
     {
         $requestedInformation = new RequestedInformation();
         $requestedInformation->setDataType(100);

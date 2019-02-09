@@ -1,11 +1,11 @@
 <?php
-namespace Buckaroo\RefundInfo;
+namespace Buckaroo\RefundInfo\ParameterDescription;
 
-use Buckaroo\RefundInfo\ParameterDescription\ListItemDescription;
+use Buckaroo\RefundInfo\ParameterDescription\ListItemDescription\ListItemDescription;
 use Buckaroo\Validators\Validator;
 
 /**
- * This class holds information about one refund input field
+ * This class holds information a parameter description
  */
 class ParameterDescription
 {
@@ -157,9 +157,11 @@ class ParameterDescription
      * @param int $list
      * @return ParameterDescription
      */
-    public function setList(int $list): ParameterDescription
+    public function setList(?int $list): ParameterDescription
     {
-        $this->validator->validateListTypes($list);
+        if ($list !== null) {
+            $this->validator->validateListTypes($list);
+        }
 
         $this->list = $list;
 
@@ -182,7 +184,7 @@ class ParameterDescription
      * @param int $maxLength
      * @return ParameterDescription
      */
-    public function setMaxLength(int $maxLength): ParameterDescription
+    public function setMaxLength(?int $maxLength): ParameterDescription
     {
         $this->maxLength = $maxLength;
 
@@ -251,7 +253,7 @@ class ParameterDescription
      * @param string $group
      * @return ParameterDescription
      */
-    public function setGroup(string $group): ParameterDescription
+    public function setGroup(?string $group): ParameterDescription
     {
         $this->group = $group;
 
@@ -297,7 +299,7 @@ class ParameterDescription
      * @param string $description
      * @return ParameterDescription
      */
-    public function setDescription(string $description): ParameterDescription
+    public function setDescription(?string $description): ParameterDescription
     {
         $this->description = $description;
 
@@ -320,7 +322,7 @@ class ParameterDescription
      * @param string $explanationHtml
      * @return ParameterDescription
      */
-    public function setExplanationHtml(string $explanationHtml): ParameterDescription
+    public function setExplanationHtml(?string $explanationHtml): ParameterDescription
     {
         $this->explanationHtml = $explanationHtml;
 
@@ -366,7 +368,7 @@ class ParameterDescription
      * @param string $inputPattern
      * @return ParameterDescription
      */
-    public function setInputPattern(string $inputPattern): ParameterDescription
+    public function setInputPattern(?string $inputPattern): ParameterDescription
     {
         $this->inputPattern = $inputPattern;
 
@@ -389,7 +391,7 @@ class ParameterDescription
      * @param string $autoCompleteType
      * @return ParameterDescription
      */
-    public function setAutoCompleteType(string $autoCompleteType): ParameterDescription
+    public function setAutoCompleteType(?string $autoCompleteType): ParameterDescription
     {
         $this->autoCompleteType = $autoCompleteType;
 
@@ -412,8 +414,11 @@ class ParameterDescription
      * @param array $listItemDescriptions
      * @return ParameterDescription
      */
-    public function setListItemDescriptions(array $listItemDescriptions): ParameterDescription
+    public function setListItemDescriptions(?array $listItemDescriptions): ParameterDescription
     {
+        if ($listItemDescriptions === null) {
+            return $this;
+        }
         foreach ($listItemDescriptions as $listItemDescription) {
             $listItemDescriptionObj = new ListItemDescription();
             $listItemDescriptionObj

@@ -1,5 +1,5 @@
 <?php
-namespace Buckaroo\RefundInfo;
+namespace Buckaroo\RefundInfo\ParameterDescription\ListItemDescription;
 
 /**
  * This class holds information about a list item description

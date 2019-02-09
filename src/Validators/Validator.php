@@ -3,6 +3,7 @@ namespace Buckaroo\Validators;
 
 use Buckaroo\Service\ServiceInterface;
 use Buckaroo\Transaction;
+use Buckaroo\RefundInfo\ParameterDescription\ParameterDescription;
 use Buckaroo\Transaction\RequiredAction\RequestedInformation;
 use Buckaroo\Exceptions\InvalidTransactionAmountException;
 use Buckaroo\Exceptions\InvalidTransactionCurrencyException;
@@ -154,7 +155,7 @@ class Validator
      */
     public function validateListTypes(string $list): void
     {
-        if (!in_array($list, self::VALID_LIST_TYPES)) {
+        if (!in_array($list, ParameterDescription::VALID_LIST_TYPES)) {
             throw new UnsupportedListTypeException();
         }
     }

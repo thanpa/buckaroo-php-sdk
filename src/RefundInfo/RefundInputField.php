@@ -42,20 +42,20 @@ class RefundInputField
             return $this;
         }
         $this->fieldDefinition = (new ParameterDescription())
-            ->setName($parameterDescription->Name)
-            ->setDataType($parameterDescription->DataType)
-            ->setList($parameterDescription->Name)
-            ->setMaxLength($parameterDescription->MaxLength)
-            ->setΜaxOccurs($parameterDescription->MaxOccurs)
-            ->setRequired($parameterDescription->Required)
-            ->setGlobal($parameterDescription->Global)
-            ->setGroup($parameterDescription->Group)
-            ->setDescription($parameterDescription->Description)
-            ->setExplanationHtml($parameterDescription->ExplanationHTML)
-            ->setDisplayName($parameterDescription->DisplayName)
-            ->setInputPattern($parameterDescription->InputPattern)
-            ->setAutoCompleteType($parameterDescription->AutoCompleteType)
-            ->setListItemDescriptions($parameterDescription->ListItemDescriptions);
+            ->setName($fieldDefinition->Name)
+            ->setDataType($fieldDefinition->DataType)
+            ->setList(isset($fieldDefinition->List) ? $fieldDefinition->List : null)
+            ->setMaxLength(isset($fieldDefinition->MaxLength) ? $fieldDefinition->MaxLength : null)
+            ->setΜaxOccurs($fieldDefinition->MaxOccurs)
+            ->setRequired($fieldDefinition->Required)
+            ->setGlobal($fieldDefinition->Global)
+            ->setGroup($fieldDefinition->Group)
+            ->setDescription($fieldDefinition->Description)
+            ->setExplanationHtml(isset($fieldDefinition->ExplanationHTML) ? $fieldDefinition->ExplanationHTML : null)
+            ->setDisplayName($fieldDefinition->DisplayName)
+            ->setInputPattern($fieldDefinition->InputPattern)
+            ->setAutoCompleteType($fieldDefinition->AutoCompleteType)
+            ->setListItemDescriptions($fieldDefinition->ListItemDescriptions);
 
         return $this;
     }

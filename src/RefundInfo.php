@@ -378,7 +378,7 @@ class RefundInfo
     {
         foreach ($refundInputFields as $refundInputField) {
             $refundInputFieldObj = (new RefundInputField())
-                ->setFieldDefinition(isset($refundInputField->RefundInputFields) ? $refundInputField->RefundInputFields : null)
+                ->setFieldDefinition(isset($refundInputField->FieldDefinition) ? $refundInputField->FieldDefinition : null)
                 ->setCurrentValue($refundInputField->CurrentValue)
                 ->setCurrentValueIncorrect($refundInputField->CurrentValueIncorrect)
                 ->setCurrentValueEditable($refundInputField->CurrentValueEditable);
