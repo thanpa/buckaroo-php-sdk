@@ -11,6 +11,16 @@ To use the Buckaroo API client, the following things are required:
 
 The client uses curl, so make sure that your PHP is installed with the curl extension.
 
+## Installation via Composer ##
+
+ + [Install Composer](https://getcomposer.org/doc/00-intro.md).
+
+ + Require the package in your project
+
+```
+composer require thanpa/buckaroo-php-sdk
+```
+
 ## Manual Installation ##
 
 Download the code from the repository (git).
